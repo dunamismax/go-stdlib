@@ -1,0 +1,70 @@
+{{define "content"}}
+<div class="container">
+    <div class="feed-container">
+        {{if .IsLoggedIn}}
+            <!-- Post creation form -->
+            <div class="card">
+                <h2>What's happening?</h2>
+                <form hx-post="/post" hx-target="#posts-container" hx-swap="afterbegin" hx-on:htmx:after-request="this.reset()">
+                    <div class="form-group">
+                        <textarea name="content" placeholder="Share your thoughts..." rows="4" maxlength="280" required></textarea>
+                    </div>
+                    <div class="form-footer">
+                        <span class="char-count">280 characters max</span>
+                        <button type="submit" class="btn btn-primary">Post</button>
+                    </div>
+                </form>
+            </div>
+        {{else}}
+            <!-- Welcome message -->
+            <div class="card welcome-card">
+                <h1>Welcome to GoSocial</h1>
+                <p>Connect with friends and share your thoughts</p>
+                <div class="welcome-actions">
+                    <a href="/register" class="btn btn-primary">Join Now</a>
+                    <a href="/login" class="btn btn-secondary">Login</a>
+                </div>
+            </div>
+        {{end}}
+
+        <!-- Posts container -->
+        <div id="posts-container" class="posts-container">
+            {{range .Posts}}
+                {{template "post" .}}
+            {{else}}
+                <div class="card">
+                    <div class="empty-state">
+                        {{if $.IsLoggedIn}}
+                            <p>No posts yet.</p>
+                        {{else}}
+                            <p>No posts yet. Join to start the conversation!</p>
+                        {{end}}
+                    </div>
+                </div>
+            {{end}}
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{define "post"}}
+<div class="card post-card">
+    <div class="post-header">
+        <div class="post-author">
+            <h3>@{{.Username}}</h3>
+            <p class="post-time">{{.CreatedAt.Format "Jan 2, 2006 at 3:04 PM"}}</p>
+        </div>
+        <div class="post-actions">
+            {{if $.IsLoggedIn}}
+                <button hx-post="/like/{{.ID}}" hx-target="this" hx-swap="outerHTML" 
+                        class="like-btn {{if .IsLiked}}liked{{end}}">
+                    ❤️ {{.LikeCount}}
+                </button>
+            {{else}}
+                <span class="like-count">❤️ {{.LikeCount}}</span>
+            {{end}}
+        </div>
+    </div>
+    <p class="post-content">{{.Content}}</p>
+</div>
+{{end}}

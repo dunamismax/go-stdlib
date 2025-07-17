@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API Playground</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/htmx.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>API Playground</h1>
+        <p>A comprehensive toolkit for developers with text analysis, manipulation, and utility functions.</p>
+
+        <div class="grid">
+            <!-- Text Analysis -->
+            <div class="card">
+                <h2>Text Analysis</h2>
+                <form>
+                    <textarea name="text" placeholder="Enter text to analyze..." rows="4"></textarea>
+                    <button type="button" 
+                            hx-post="/analyze" 
+                            hx-target="#analyze-result" 
+                            hx-include="this">
+                        Analyze
+                    </button>
+                </form>
+                <div id="analyze-result" class="result"></div>
+            </div>
+
+            <!-- Text Manipulation -->
+            <div class="card">
+                <h2>Text Manipulation</h2>
+                <form>
+                    <input type="text" name="text" placeholder="Enter text to manipulate...">
+                    <div>
+                        <button type="button" 
+                                hx-post="/reverse" 
+                                hx-target="#manipulate-result" 
+                                hx-include="this">
+                            Reverse
+                        </button>
+                        <button type="button" 
+                                hx-post="/titlecase" 
+                                hx-target="#manipulate-result" 
+                                hx-include="this">
+                            Title Case
+                        </button>
+                        <button type="button" 
+                                hx-post="/count-vowels" 
+                                hx-target="#manipulate-result" 
+                                hx-include="this">
+                            Count Vowels
+                        </button>
+                    </div>
+                </form>
+                <div id="manipulate-result" class="result"></div>
+            </div>
+
+            <!-- Random Generators -->
+            <div class="card">
+                <h2>Random Generators</h2>
+                <form>
+                    <div>
+                        <label>Min:</label>
+                        <input type="number" name="min" value="1">
+                        <label>Max:</label>
+                        <input type="number" name="max" value="100">
+                    </div>
+                    <div>
+                        <button type="button" 
+                                hx-post="/random-number" 
+                                hx-target="#random-result" 
+                                hx-include="this">
+                            Random Number
+                        </button>
+                        <button type="button" 
+                                hx-post="/random-string" 
+                                hx-target="#random-result" 
+                                hx-include="this">
+                            Random String
+                        </button>
+                        <button type="button" 
+                                hx-post="/uuid" 
+                                hx-target="#random-result">
+                            UUID
+                        </button>
+                    </div>
+                </form>
+                <div id="random-result" class="result"></div>
+            </div>
+
+            <!-- Encoding/Hashing -->
+            <div class="card">
+                <h2>Encoding & Hashing</h2>
+                <form>
+                    <input type="text" name="text" placeholder="Enter text to encode/hash...">
+                    <div>
+                        <button type="button" 
+                                hx-post="/sha256" 
+                                hx-target="#encode-result" 
+                                hx-include="this">
+                            SHA256
+                        </button>
+                        <button type="button" 
+                                hx-post="/base64-encode" 
+                                hx-target="#encode-result" 
+                                hx-include="this">
+                            Base64 Encode
+                        </button>
+                        <button type="button" 
+                                hx-post="/base64-decode" 
+                                hx-target="#encode-result" 
+                                hx-include="this">
+                            Base64 Decode
+                        </button>
+                    </div>
+                </form>
+                <div id="encode-result" class="result"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

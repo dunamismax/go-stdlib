@@ -1,0 +1,12 @@
+go 1.23.0
+
+use (
+	./
+	./apps/web/api-playground
+	./apps/web/go-social
+	./pkg/components
+	./pkg/database
+	./pkg/middleware
+	./pkg/styles
+	./pkg/utils
+)
