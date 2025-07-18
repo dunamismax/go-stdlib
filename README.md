@@ -20,48 +20,32 @@
 
 ---
 
-## About This Stack
+## About
 
-This monorepo showcases **The Ultimate Go Standard Library Web Stack** - architected for maximum simplicity, stability, and robustness by exclusively using the Go standard library for all backend logic. It produces a single, self-contained, and dependency-free binary that serves a rich, hypermedia-driven interface, representing the purest form of a Go web application.
+A monorepo showcasing **The Ultimate Go Standard Library Web Stack** - built for maximum simplicity and stability using only Go's standard library. Produces a single, self-contained binary with embedded assets and hypermedia-driven interfaces.
 
-### Core Philosophy
+**Core Philosophy:**
 
-- **Standard Library First**: Pure Go standard library with minimal external dependencies
-- **Hypermedia-Driven**: Server-rendered HTML with HTMX for dynamic interactions
-- **Single-Binary Deployment**: Everything embedded via `//go:embed`
-- **Type-Safe Templates**: Go's built-in `html/template` with automatic XSS protection
-- **Zero-Latency Database**: SQLite embedded directly in the binary (CGO-free)
-- **No Build Steps**: Pure Go with embedded assets
-- **Vanilla CSS**: Direct styling control without framework overhead
+- Standard Library First with minimal external dependencies
+- Single-Binary Deployment with embedded assets
+- Type-Safe Templates with XSS protection
+- Zero-Latency SQLite database (CGO-free)
+- Vanilla CSS without framework overhead
 
 ## Tech Stack
 
-| Layer                    | Technology                                                      | Purpose                                          |
-| ------------------------ | --------------------------------------------------------------- | ------------------------------------------------ |
-| **Backend Language**     | [Go](https://go.dev/doc/)                                       | Fast, compiled, statically-typed backend         |
-| **Asset Embedding**      | [Go Embed](https://pkg.go.dev/embed)                            | Bundle all static assets into binary             |
-| **Backend Router**       | [net/http](https://pkg.go.dev/net/http)                         | Standard library HTTP router (http.ServeMux)    |
-| **Database**             | [SQLite](https://www.sqlite.org/docs.html)                      | Zero-latency embedded database (CGO-free)       |
-| **Frontend Interaction** | [HTMX](https://htmx.org/docs/)                                  | Dynamic interfaces without JavaScript frameworks |
-| **Markup & Templates**   | [html/template](https://pkg.go.dev/html/template)               | Type-safe HTML templates with XSS protection    |
-| **Styling**              | [Vanilla CSS](https://developer.mozilla.org/en-US/docs/Web/CSS) | Direct styling control, embedded via Go          |
-| **Build Orchestrator**   | [Mage](https://magefile.org/)                                   | Go-based build automation                        |
+| Layer         | Technology                                                          | Purpose                                 |
+| ------------- | ------------------------------------------------------------------- | --------------------------------------- |
+| **Backend**   | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http) | HTTP server with ServeMux routing       |
+| **Database**  | [SQLite](https://www.sqlite.org/docs.html)                          | Embedded database (CGO-free)            |
+| **Frontend**  | [HTMX](https://htmx.org/docs/)                                      | Dynamic interactions without JavaScript |
+| **Templates** | [html/template](https://pkg.go.dev/html/template)                   | Type-safe HTML with XSS protection      |
+| **Styling**   | Vanilla CSS                                                         | Direct styling control                  |
+| **Build**     | [Mage](https://magefile.org/)                                       | Go-based build automation               |
 
 ## Quick Start
 
-### Prerequisites
-
-- Go 1.23 or higher
-- [Mage](https://magefile.org/) for build automation
-
-### Installation
-
-1. Install Mage:
-
-   ```bash
-   go install github.com/magefile/mage@latest
-   ```
-
+1. Install Mage: `go install github.com/magefile/mage@latest`
 2. Clone and initialize:
 
    ```bash
@@ -70,7 +54,7 @@ This monorepo showcases **The Ultimate Go Standard Library Web Stack** - archite
    mage dev:init
    ```
 
-3. Start the stack:
+3. Start applications:
 
    ```bash
    mage dev:start
@@ -82,194 +66,65 @@ This monorepo showcases **The Ultimate Go Standard Library Web Stack** - archite
 
 ### API Playground (Port 8080)
 
-Interactive API testing platform showcasing Go + HTMX capabilities.
-
-**Features:**
-
-- Text analysis with word frequency and reading time
-- Random generators for numbers, strings, dice, and UUIDs
-- Hash and encoding tools (SHA256, Base64, URL encoding)
-- Time utilities with multiple formats
-
-**Implementation:**
-
-- Pure Go standard library with `http.ServeMux`
-- Go's `html/template` for safe HTML rendering
-- Embedded CSS styling via `//go:embed`
-- HTMX for dynamic interactions
-- Type-safe form handling
+Interactive API testing platform with text analysis, random generators, hash/encoding tools, and time utilities.
 
 ### GoSocial (Port 8081)
 
-Social media platform demonstrating full-stack Go development using only standard library.
+Social media platform with secure authentication, real-time feeds, SQLite database, and responsive design.
 
-**Features:**
-
-- Secure bcrypt-based authentication
-- Real-time social feed with like/unlike functionality
-- Embedded SQLite database with proper migrations (CGO-free)
-- Responsive design with dark theme
-- XSS protection via `html/template`
-
-**Implementation:**
-
-- Go standard library with `http.ServeMux`
-- SQLite with CGO-free driver (`modernc.org/sqlite`)
-- HTMX for dynamic interactions
-- `html/template` for type-safe HTML generation
-- Vanilla CSS embedded via `//go:embed`
-- HTTP-only cookies for session management
-
-## Development Commands
-
-### Essential Commands
+## Commands
 
 ```bash
-mage dev:init        # Initialize development environment
+# Development
+mage dev:init        # Initialize environment
 mage dev:start       # Start all applications
 mage build:all       # Build all applications
 mage test:all        # Run all tests
-mage status          # Show project status
-mage clean           # Clean build artifacts
-```
 
-### Build Commands
+# Individual apps
+mage runapi          # Run API playground only
+mage runsocial       # Run GoSocial only
 
-```bash
-mage build:web       # Build web applications
-mage build:api       # Build API playground
-mage build:social    # Build GoSocial
-```
-
-### Development Tools
-
-```bash
-mage dev:fmt         # Format all Go code
-mage dev:lint        # Run linter on all code
-mage dev:deps        # Download all dependencies
-mage dev:tidy        # Tidy all Go modules
-```
-
-### Production Commands
-
-```bash
+# Production
 mage prod:release    # Create production release
 mage prod:caddy      # Start Caddy reverse proxy
 ```
 
-### Individual Applications
-
-```bash
-mage runapi          # Run API playground only
-mage runsocial       # Run GoSocial only
-```
-
 ## Package Architecture
 
-### Database (`pkg/database`)
-
-SQLite management with embedded migrations, connection pooling, and query optimization using a CGO-free driver.
-
-### Middleware (`pkg/middleware`)
-
-Basic HTTP middleware for logging, CORS, timeouts, and error recovery using standard library patterns.
-
-### Utils (`pkg/utils`)
-
-Common utilities including response helpers, text processing, and random generation.
+- **Database** (`pkg/database`): SQLite management with migrations and connection pooling
+- **Middleware** (`pkg/middleware`): HTTP middleware for logging, CORS, and error recovery
+- **Utils** (`pkg/utils`): Response helpers, text processing, and random generation
 
 ## Production Deployment
 
-Each application builds to a single binary containing:
-
-- Go executable
-- All static assets (CSS, JS, images)
-- HTML templates
-- SQLite database schema
+Each application builds to a single binary containing the Go executable, static assets, HTML templates, and SQLite schema.
 
 ```bash
-mage prod:release    # Build production binaries
-./build/api-playground  # Run API playground
-./build/go-social       # Run GoSocial
+mage prod:release
+./build/api-playground
+./build/go-social
 ```
 
-### Reverse Proxy
+## Security & Performance
 
-Use Caddy for automatic HTTPS and reverse proxying:
+**Security:** Input validation, HTML escaping, parameterized queries, secure headers, bcrypt hashing, HTTP-only cookies
 
-```bash
-mage dev:start       # Start applications
-mage prod:caddy      # Start Caddy proxy
-```
-
-## Security Features
-
-- Input validation and sanitization
-- Context-aware HTML escaping via `html/template`
-- Parameterized SQL queries preventing SQL injection
-- Secure headers (CORS, content-type)
-- Bcrypt password hashing
-- HTTP-only cookies with secure expiration
-- Path validation for file operations
-
-## Performance Benefits
-
-- Compiled binary with no runtime interpretation overhead
-- Embedded assets eliminate filesystem lookups
-- SQLite provides zero network latency
-- Minimal dependencies for faster startup
-- Efficient connection pooling
-- Go's goroutines handle thousands of concurrent connections
-- Standard library optimizations
+**Performance:** Compiled binary, embedded assets, zero network latency, minimal dependencies, goroutine concurrency
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Run tests: `mage test:all`
-5. Format code: `mage dev:fmt`
-6. Submit a pull request
-
-## Troubleshooting
-
-### Common Issues
-
-**Build Problems:**
-
-```bash
-mage clean
-mage build:all
-```
-
-**Development Issues:**
-
-```bash
-mage dev:init
-mage dev:deps
-mage dev:tidy
-```
-
-**Database Issues:**
-
-```bash
-# Check SQLite files
-ls -la apps/web/go-social/data/
-# Reset database (removes all data)
-rm apps/web/go-social/data/*.db
-```
-
-## Support This Project
-
-If you find this Ultimate Go Standard Library Web Stack valuable, consider supporting its development:
+3. Run tests: `mage test:all`
+4. Format code: `mage dev:fmt`
+5. Submit a pull request
 
 <p align="center">
   <a href="https://www.buymeacoffee.com/dunamismax" target="_blank">
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" />
   </a>
 </p>
-
-## Connect
 
 <p align="center">
   <a href="https://twitter.com/dunamismax" target="_blank"><img src="https://img.shields.io/badge/Twitter-%231DA1F2.svg?&style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"></a>
