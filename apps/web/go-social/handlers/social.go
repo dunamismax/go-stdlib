@@ -11,8 +11,6 @@ import (
 	"github.com/dunamismax/go-stdlib/pkg/utils"
 )
 
-
-
 type Handler struct {
 	userService *models.UserService
 	templates   *template.Template
@@ -120,7 +118,7 @@ func (h *Handler) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	if isHTMXRequest(r) {
 		w.Header().Set("Content-Type", "text/html")
-		
+
 		// Create a new post with the current user data
 		newPost := &models.Post{
 			ID:        post.ID,
@@ -161,7 +159,6 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract post ID from URL path using Go 1.22+ path parameters
 	postIDStr := r.PathValue("postId")
 	postID, err := strconv.Atoi(postIDStr)
 	if err != nil {
