@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="go.png" alt="Go Standard Library Web Stack Logo" width="600" />
+  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/go-logo.png" alt="Go Standard Library Web Stack Logo" width="600" />
 </p>
 
 <p align="center">
@@ -72,6 +72,10 @@ Interactive API testing platform with text analysis, random generators, hash/enc
 
 Social media platform with secure authentication, real-time feeds, SQLite database, and responsive design.
 
+<p align="center">
+  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-mage.svg" alt="Gopher Mage" width="100" />
+</p>
+
 ## Commands
 
 ```bash
@@ -121,8 +125,8 @@ mage prod:release
 5. Submit a pull request
 
 <p align="center">
-  <a href="https://www.buymeacoffee.com/dunamismax" target="_blank">
-    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" />
+  <a href="https://buymeacoffee.com/dunamismax" target="_blank">
+    <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/buy-coffee-go.gif" alt="Buy Me A Coffee" style="height: 120px !important;" />
   </a>
 </p>
 
@@ -143,4 +147,8 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <p align="center">
   <strong>The Ultimate Go Standard Library Web Stack</strong><br>
   <sub>Go + http.ServeMux + HTMX + html/template + SQLite + Vanilla CSS + Mage</sub>
+</p>
+
+<p align="center">
+  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-running-jumping.gif" alt="Gopher Running and Jumping" width="300" />
 </p>
