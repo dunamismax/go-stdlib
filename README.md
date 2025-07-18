@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/go-logo.png" alt="Go Standard Library Web Stack Logo" width="600" />
+  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/go-logo.png" alt="Go Standard Library Web Stack Logo" width="400" />
 </p>
 
 <p align="center">
@@ -73,7 +73,7 @@ Interactive API testing platform with text analysis, random generators, hash/enc
 Social media platform with secure authentication, real-time feeds, SQLite database, and responsive design.
 
 <p align="center">
-  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-mage.svg" alt="Gopher Mage" width="100" />
+  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-mage.svg" alt="Gopher Mage" width="150" />
 </p>
 
 ## Commands
@@ -126,7 +126,7 @@ mage prod:release
 
 <p align="center">
   <a href="https://buymeacoffee.com/dunamismax" target="_blank">
-    <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/buy-coffee-go.gif" alt="Buy Me A Coffee" style="height: 120px !important;" />
+    <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/buy-coffee-go.gif" alt="Buy Me A Coffee" style="height: 150px !important;" />
   </a>
 </p>
 
@@ -150,5 +150,5 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 </p>
 
 <p align="center">
-  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-running-jumping.gif" alt="Gopher Running and Jumping" width="300" />
+  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-running-jumping.gif" alt="Gopher Running and Jumping" width="400" />
 </p>
