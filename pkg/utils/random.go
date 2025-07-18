@@ -20,7 +20,7 @@ func RandomInt(min, max int) int {
 func RandomString(length int) string {
 	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	result := make([]byte, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		randomIndex, _ := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
 		result[i] = chars[randomIndex.Int64()]
 	}
@@ -30,7 +30,7 @@ func RandomString(length int) string {
 func SecureRandomString(length int) string {
 	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	result := make([]byte, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		randomIndex, _ := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
 		result[i] = chars[randomIndex.Int64()]
 	}

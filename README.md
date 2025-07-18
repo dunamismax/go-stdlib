@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://golang.org/"><img src="https://img.shields.io/badge/Go-1.23+-00ADD8.svg?logo=go" alt="Go Version"></a>
+  <a href="https://golang.org/"><img src="https://img.shields.io/badge/Go-1.24+-00ADD8.svg?logo=go" alt="Go Version"></a>
   <a href="https://pkg.go.dev/net/http"><img src="https://img.shields.io/badge/Router-http.ServeMux-00ADD8.svg?logo=go" alt="Standard Library Router"></a>
   <a href="https://htmx.org/"><img src="https://img.shields.io/badge/HTMX-2.0+-3366CC.svg?logo=htmx" alt="HTMX Version"></a>
   <a href="https://pkg.go.dev/html/template"><img src="https://img.shields.io/badge/Templates-html/template-00ADD8.svg?logo=go" alt="Standard Library Templates"></a>
@@ -36,7 +36,7 @@ A monorepo showcasing **The Ultimate Go Standard Library Web Stack** - built for
 
 | Layer         | Technology                                                          | Purpose                                 |
 | ------------- | ------------------------------------------------------------------- | --------------------------------------- |
-| **Backend**   | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http) | HTTP server with ServeMux routing       |
+| **Backend**   | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http) | HTTP server with method-aware routing   |
 | **Database**  | [SQLite](https://www.sqlite.org/docs.html)                          | Embedded database (CGO-free)            |
 | **Frontend**  | [HTMX](https://htmx.org/docs/)                                      | Dynamic interactions without JavaScript |
 | **Templates** | [html/template](https://pkg.go.dev/html/template)                   | Type-safe HTML with XSS protection      |
@@ -97,7 +97,7 @@ mage prod:caddy      # Start Caddy reverse proxy
 ## Package Architecture
 
 - **Database** (`pkg/database`): SQLite management with migrations and connection pooling
-- **Middleware** (`pkg/middleware`): HTTP middleware for logging, CORS, and error recovery
+- **Middleware** (`pkg/middleware`): HTTP middleware for structured logging, CORS, and rate limiting
 - **Utils** (`pkg/utils`): Response helpers, text processing, and random generation
 
 ## Production Deployment

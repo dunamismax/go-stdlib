@@ -6,7 +6,6 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/dunamismax/go-stdlib/apps/web/go-social/models"
 	"github.com/dunamismax/go-stdlib/pkg/utils"
@@ -162,9 +161,9 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract post ID from URL path
-	path := strings.TrimPrefix(r.URL.Path, "/like/")
-	postID, err := strconv.Atoi(path)
+	// Extract post ID from URL path using Go 1.22+ path parameters
+	postIDStr := r.PathValue("postId")
+	postID, err := strconv.Atoi(postIDStr)
 	if err != nil {
 		if isHTMXRequest(r) {
 			w.Header().Set("Content-Type", "text/html")

@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"time"
@@ -55,6 +56,7 @@ func NewDB(dataDir string) (*DB, error) {
 	}
 
 	dbPath := filepath.Join(dataDir, "app.db")
+	slog.Info("Opening database", "path", dbPath)
 	conn, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open database: %w", err)
@@ -75,6 +77,7 @@ func (db *DB) Close() error {
 }
 
 func (db *DB) Migrate() error {
+	slog.Info("Running database migrations")
 	// Create tables
 	schema := `
 		CREATE TABLE IF NOT EXISTS users (
@@ -130,9 +133,11 @@ func (db *DB) Migrate() error {
 
 	_, err := db.conn.Exec(schema)
 	if err != nil {
+		slog.Error("Failed to create tables", "error", err)
 		return fmt.Errorf("failed to create tables: %w", err)
 	}
 
+	slog.Info("Database migrations completed successfully")
 	return nil
 }
 

@@ -1,7 +1,7 @@
-go 1.23.0
+go 1.24
 
 use (
-	./
+	.
 	./apps/web/api-playground
 	./apps/web/go-social
 	./pkg/components

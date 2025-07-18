@@ -8,7 +8,9 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -135,8 +137,9 @@ func (a *App) reverseText(w http.ResponseWriter, r *http.Request) {
 	text := r.FormValue("text")
 
 	runes := []rune(text)
-	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
-		runes[i], runes[j] = runes[j], runes[i]
+	n := len(runes)
+	for i := range n / 2 {
+		runes[i], runes[n-1-i] = runes[n-1-i], runes[i]
 	}
 
 	data := map[string]interface{}{
@@ -318,34 +321,49 @@ func loggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-		log.Printf("%s %s %s %v", r.Method, r.URL.Path, r.RemoteAddr, time.Since(start))
+		slog.Info("HTTP request",
+			"method", r.Method,
+			"path", r.URL.Path,
+			"remote_addr", r.RemoteAddr,
+			"duration", time.Since(start),
+			"user_agent", r.UserAgent(),
+		)
 	})
 }
 
 func main() {
+	// Setup structured logging
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+	slog.SetDefault(logger)
+
 	app := NewApp()
 
 	mux := http.NewServeMux()
 	
 	// Static files
-	mux.HandleFunc("/static/htmx.min.js", app.serveHTMX)
-	mux.HandleFunc("/static/styles.css", app.serveCSS)
+	mux.HandleFunc("GET /static/htmx.min.js", app.serveHTMX)
+	mux.HandleFunc("GET /static/styles.css", app.serveCSS)
 	
 	// Routes
-	mux.HandleFunc("/", app.homePage)
-	mux.HandleFunc("/analyze", app.analyzeText)
-	mux.HandleFunc("/reverse", app.reverseText)
-	mux.HandleFunc("/titlecase", app.titleCase)
-	mux.HandleFunc("/count-vowels", app.countVowels)
-	mux.HandleFunc("/random-number", app.randomNumber)
-	mux.HandleFunc("/random-string", app.randomString)
-	mux.HandleFunc("/uuid", app.generateUUID)
-	mux.HandleFunc("/sha256", app.sha256Hash)
-	mux.HandleFunc("/base64-encode", app.base64Encode)
-	mux.HandleFunc("/base64-decode", app.base64Decode)
+	mux.HandleFunc("GET /", app.homePage)
+	mux.HandleFunc("POST /analyze", app.analyzeText)
+	mux.HandleFunc("POST /reverse", app.reverseText)
+	mux.HandleFunc("POST /titlecase", app.titleCase)
+	mux.HandleFunc("POST /count-vowels", app.countVowels)
+	mux.HandleFunc("POST /random-number", app.randomNumber)
+	mux.HandleFunc("POST /random-string", app.randomString)
+	mux.HandleFunc("POST /uuid", app.generateUUID)
+	mux.HandleFunc("POST /sha256", app.sha256Hash)
+	mux.HandleFunc("POST /base64-encode", app.base64Encode)
+	mux.HandleFunc("POST /base64-decode", app.base64Decode)
 
 	handler := loggerMiddleware(mux)
 
-	fmt.Println("API Playground starting on :8080")
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	slog.Info("API Playground starting", "port", ":8080")
+	if err := http.ListenAndServe(":8080", handler); err != nil {
+		slog.Error("Server failed to start", "error", err)
+		log.Fatal(err)
+	}
 }

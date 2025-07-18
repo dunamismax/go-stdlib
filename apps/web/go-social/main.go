@@ -4,7 +4,9 @@ import (
 	_ "embed"
 	"html/template"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/dunamismax/go-stdlib/apps/web/go-social/handlers"
@@ -31,13 +33,21 @@ var registerTemplate string
 var homeTemplate string
 
 func main() {
+	// Setup structured logging
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+	slog.SetDefault(logger)
+
 	db, err := database.NewDB("./data")
 	if err != nil {
+		slog.Error("Failed to connect to database", "error", err)
 		log.Fatal("Failed to connect to database:", err)
 	}
 	defer db.Close()
 
 	if err := db.Migrate(); err != nil {
+		slog.Error("Failed to run migrations", "error", err)
 		log.Fatal("Failed to run migrations:", err)
 	}
 
@@ -59,41 +69,31 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Static files
-	mux.HandleFunc("/static/htmx.min.js", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /static/htmx.min.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/javascript")
 		w.Write(htmxJS)
 	})
-	mux.HandleFunc("/static/styles.css", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /static/styles.css", func(w http.ResponseWriter, r *http.Request) {
 		handler.ServeCSS(w, r, stylesCSS)
 	})
 
 	// Authentication routes
-	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			handler.LoginHandler(w, r)
-		} else {
-			handler.LoginPageHandler(w, r)
-		}
-	})
-	mux.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			handler.RegisterHandler(w, r)
-		} else {
-			handler.RegisterPageHandler(w, r)
-		}
-	})
+	mux.HandleFunc("GET /login", handler.LoginPageHandler)
+	mux.HandleFunc("POST /login", handler.LoginHandler)
+	mux.HandleFunc("GET /register", handler.RegisterPageHandler)
+	mux.HandleFunc("POST /register", handler.RegisterHandler)
 
 	// Other routes
-	mux.HandleFunc("/logout", handler.LogoutHandler)
-	mux.HandleFunc("/post", handler.CreatePostHandler)
-	mux.HandleFunc("/like/", handler.LikePostHandler)
+	mux.HandleFunc("POST /logout", handler.LogoutHandler)
+	mux.HandleFunc("POST /post", handler.CreatePostHandler)
+	mux.HandleFunc("POST /like/{postId}", handler.LikePostHandler)
 
 	// API endpoints
-	mux.HandleFunc("/api/posts", handler.GetPostsHandler)
-	mux.HandleFunc("/api/user/me", handler.GetCurrentUserHandler)
+	mux.HandleFunc("GET /api/posts", handler.GetPostsHandler)
+	mux.HandleFunc("GET /api/user/me", handler.GetCurrentUserHandler)
 
 	// Pages
-	mux.HandleFunc("/", handler.HomeHandler)
+	mux.HandleFunc("GET /", handler.HomeHandler)
 
 	// Apply basic logging middleware
 	finalHandler := loggerMiddleware(mux)
@@ -106,14 +106,23 @@ func main() {
 		IdleTimeout:  120 * time.Second,
 	}
 
-	log.Println("GoSocial server starting on :8081")
-	log.Fatal(server.ListenAndServe())
+	slog.Info("GoSocial server starting", "port", ":8081")
+	if err := server.ListenAndServe(); err != nil {
+		slog.Error("Server failed to start", "error", err)
+		log.Fatal(err)
+	}
 }
 
 func loggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-		log.Printf("%s %s %s %v", r.Method, r.URL.Path, r.RemoteAddr, time.Since(start))
+		slog.Info("HTTP request",
+			"method", r.Method,
+			"path", r.URL.Path,
+			"remote_addr", r.RemoteAddr,
+			"duration", time.Since(start),
+			"user_agent", r.UserAgent(),
+		)
 	})
 }

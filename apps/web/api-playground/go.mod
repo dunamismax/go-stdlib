@@ -1,3 +1,3 @@
 module github.com/dunamismax/go-stdlib/apps/web/api-playground
 
-go 1.23.0
+go 1.24

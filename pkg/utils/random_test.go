@@ -7,7 +7,7 @@ import (
 func TestRandomInt(t *testing.T) {
 	min := 1
 	max := 100
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		got := RandomInt(min, max)
 		if got < min || got > max {
 			t.Errorf("RandomInt() = %v, want between %v and %v", got, min, max)
