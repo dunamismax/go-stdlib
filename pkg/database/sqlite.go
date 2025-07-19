@@ -16,15 +16,15 @@ type DB struct {
 }
 
 type User struct {
-	ID          int       `json:"id"`
-	Username    string    `json:"username"`
-	Email       string    `json:"email"`
-	PasswordHash string   `json:"password_hash"`
-	DisplayName string    `json:"display_name"`
-	Bio         string    `json:"bio"`
-	AvatarURL   string    `json:"avatar_url"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID           int       `json:"id"`
+	Username     string    `json:"username"`
+	Email        string    `json:"email"`
+	PasswordHash string    `json:"password_hash"`
+	DisplayName  string    `json:"display_name"`
+	Bio          string    `json:"bio"`
+	AvatarURL    string    `json:"avatar_url"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
 
 type Post struct {
@@ -48,7 +48,6 @@ type Like struct {
 	PostID    int       `json:"post_id"`
 	CreatedAt time.Time `json:"created_at"`
 }
-
 
 func NewDB(dataDir string) (*DB, error) {
 	if err := os.MkdirAll(dataDir, 0750); err != nil {
@@ -144,56 +143,56 @@ func (db *DB) Migrate() error {
 func (db *DB) GetUserByUsername(username string) (*User, error) {
 	query := `SELECT id, username, email, password_hash, display_name, bio, avatar_url, created_at, updated_at 
 			 FROM users WHERE username = ?`
-	
+
 	var user User
 	err := db.conn.QueryRow(query, username).Scan(
 		&user.ID, &user.Username, &user.Email, &user.PasswordHash,
 		&user.DisplayName, &user.Bio, &user.AvatarURL, &user.CreatedAt, &user.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("user not found")
 		}
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	
+
 	return &user, nil
 }
 
 func (db *DB) GetUserByEmail(email string) (*User, error) {
 	query := `SELECT id, username, email, password_hash, display_name, bio, avatar_url, created_at, updated_at 
 			 FROM users WHERE email = ?`
-	
+
 	var user User
 	err := db.conn.QueryRow(query, email).Scan(
 		&user.ID, &user.Username, &user.Email, &user.PasswordHash,
 		&user.DisplayName, &user.Bio, &user.AvatarURL, &user.CreatedAt, &user.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("user not found")
 		}
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	
+
 	return &user, nil
 }
 
 func (db *DB) CreateUser(username, email, passwordHash string) (*User, error) {
 	query := `INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)`
-	
+
 	result, err := db.conn.Exec(query, username, email, passwordHash)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
-	
+
 	id, err := result.LastInsertId()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user ID: %w", err)
 	}
-	
+
 	// Return the created user
 	return db.GetUserByID(int(id))
 }
@@ -201,33 +200,33 @@ func (db *DB) CreateUser(username, email, passwordHash string) (*User, error) {
 func (db *DB) GetUserByID(id int) (*User, error) {
 	query := `SELECT id, username, email, password_hash, display_name, bio, avatar_url, created_at, updated_at 
 			 FROM users WHERE id = ?`
-	
+
 	var user User
 	err := db.conn.QueryRow(query, id).Scan(
 		&user.ID, &user.Username, &user.Email, &user.PasswordHash,
 		&user.DisplayName, &user.Bio, &user.AvatarURL, &user.CreatedAt, &user.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("user not found")
 		}
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	
+
 	return &user, nil
 }
 
 func (db *DB) GetRecentPosts(limit int) ([]Post, error) {
 	query := `SELECT id, user_id, content, created_at, updated_at 
 			 FROM posts ORDER BY created_at DESC LIMIT ?`
-	
+
 	rows, err := db.conn.Query(query, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get posts: %w", err)
 	}
 	defer rows.Close()
-	
+
 	var posts []Post
 	for rows.Next() {
 		var post Post
@@ -237,91 +236,91 @@ func (db *DB) GetRecentPosts(limit int) ([]Post, error) {
 		}
 		posts = append(posts, post)
 	}
-	
+
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("error iterating posts: %w", err)
 	}
-	
+
 	return posts, nil
 }
 
 func (db *DB) CreatePost(userID int, content string) (*Post, error) {
 	query := `INSERT INTO posts (user_id, content) VALUES (?, ?)`
-	
+
 	result, err := db.conn.Exec(query, userID, content)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create post: %w", err)
 	}
-	
+
 	id, err := result.LastInsertId()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get post ID: %w", err)
 	}
-	
+
 	// Return the created post
 	return db.GetPostByID(int(id))
 }
 
 func (db *DB) GetPostByID(id int) (*Post, error) {
 	query := `SELECT id, user_id, content, created_at, updated_at FROM posts WHERE id = ?`
-	
+
 	var post Post
 	err := db.conn.QueryRow(query, id).Scan(
 		&post.ID, &post.UserID, &post.Content, &post.CreatedAt, &post.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("post not found")
 		}
 		return nil, fmt.Errorf("failed to get post: %w", err)
 	}
-	
+
 	return &post, nil
 }
 
 func (db *DB) LikePost(userID, postID int) error {
 	query := `INSERT INTO likes (user_id, post_id) VALUES (?, ?) ON CONFLICT DO NOTHING`
-	
+
 	_, err := db.conn.Exec(query, userID, postID)
 	if err != nil {
 		return fmt.Errorf("failed to like post: %w", err)
 	}
-	
+
 	return nil
 }
 
 func (db *DB) UnlikePost(userID, postID int) error {
 	query := `DELETE FROM likes WHERE user_id = ? AND post_id = ?`
-	
+
 	_, err := db.conn.Exec(query, userID, postID)
 	if err != nil {
 		return fmt.Errorf("failed to unlike post: %w", err)
 	}
-	
+
 	return nil
 }
 
 func (db *DB) GetLikeCount(postID int) (int, error) {
 	query := `SELECT COUNT(*) FROM likes WHERE post_id = ?`
-	
+
 	var count int
 	err := db.conn.QueryRow(query, postID).Scan(&count)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get like count: %w", err)
 	}
-	
+
 	return count, nil
 }
 
 func (db *DB) IsPostLiked(userID, postID int) (bool, error) {
 	query := `SELECT COUNT(*) FROM likes WHERE user_id = ? AND post_id = ?`
-	
+
 	var count int
 	err := db.conn.QueryRow(query, userID, postID).Scan(&count)
 	if err != nil {
 		return false, fmt.Errorf("failed to check like status: %w", err)
 	}
-	
+
 	return count > 0, nil
 }

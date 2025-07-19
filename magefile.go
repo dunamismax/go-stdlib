@@ -119,6 +119,7 @@ func Help() {
 	fmt.Println()
 	colorPrint(colorBlue, "Maintenance Commands:")
 	fmt.Println("  mage clean           Clean build artifacts")
+	fmt.Println("  mage format          Format all Go code and tidy modules")
 	fmt.Println("  mage tools:install   Install development tools")
 	fmt.Println("  mage tools:upgrade   Upgrade all dependencies")
 	fmt.Println("  mage status          Show project status")
@@ -675,6 +676,40 @@ func (Prod) Release() error {
 	return nil
 }
 
+// Format formats all Go code in the monorepo
+func Format() error {
+	printSection("Formatting all Go code in monorepo...")
+
+	// Format all Go files recursively with gofmt
+	if err := sh.Run("gofmt", "-w", "-s", "."); err != nil {
+		return fmt.Errorf("failed to format Go code: %w", err)
+	}
+
+	// Also run go mod tidy on all modules to clean up dependencies
+	modules := []string{
+		apiPlaygroundDir,
+		goSocialDir,
+		componentsDir,
+		databaseDir,
+		middlewareDir,
+		stylesDir,
+		utilsDir,
+	}
+
+	for _, dir := range modules {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			fmt.Printf("  📁 Tidying %s\n", dir)
+			if err := sh.RunWith(map[string]string{"PWD": dir}, "go", "mod", "tidy"); err != nil {
+				printWarning(fmt.Sprintf("Failed to tidy %s: %v", dir, err))
+				continue
+			}
+		}
+	}
+
+	printSuccess("All Go code formatted and modules tidied")
+	return nil
+}
+
 // Watch watches for changes and rebuilds (requires entr)
 func Watch() error {
 	printSection("Watching for changes...")
@@ -724,7 +759,7 @@ func RunSocial() error {
 // RunAPIWithAir runs API playground with Air live reloading
 func RunAPIWithAir() error {
 	printSection("Starting API Playground with Air...")
-	
+
 	// Check if Air is installed
 	if _, err := exec.LookPath("air"); err != nil {
 		printError("Air not installed. Run 'mage tools:install' first")
@@ -738,7 +773,7 @@ func RunAPIWithAir() error {
 // RunSocialWithAir runs GoSocial with Air live reloading
 func RunSocialWithAir() error {
 	printSection("Starting GoSocial with Air...")
-	
+
 	// Check if Air is installed
 	if _, err := exec.LookPath("air"); err != nil {
 		printError("Air not installed. Run 'mage tools:install' first")

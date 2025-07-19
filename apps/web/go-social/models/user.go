@@ -42,12 +42,12 @@ func NewUserService(db *database.DB) *UserService {
 
 func (s *UserService) CreateUser(username, email, password, displayName string) (*User, error) {
 	hashedPassword := hashPassword(password)
-	
+
 	user, err := s.db.CreateUser(username, email, hashedPassword)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
-	
+
 	return &User{
 		ID:          user.ID,
 		Username:    user.Username,
@@ -65,7 +65,7 @@ func (s *UserService) GetUserByID(id int) (*User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	
+
 	return &User{
 		ID:          user.ID,
 		Username:    user.Username,
@@ -83,7 +83,7 @@ func (s *UserService) GetUserByUsername(username string) (*User, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	
+
 	return &User{
 		ID:          user.ID,
 		Username:    user.Username,
@@ -101,11 +101,11 @@ func (s *UserService) AuthenticateUser(username, password string) (*User, error)
 	if err != nil {
 		return nil, fmt.Errorf("invalid credentials")
 	}
-	
+
 	if !verifyPassword(password, user.PasswordHash) {
 		return nil, fmt.Errorf("invalid credentials")
 	}
-	
+
 	return &User{
 		ID:          user.ID,
 		Username:    user.Username,
@@ -123,13 +123,13 @@ func (s *UserService) CreatePost(userID int, content string) (*Post, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create post: %w", err)
 	}
-	
+
 	// Get username for the post
 	user, err := s.db.GetUserByID(userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get user: %w", err)
 	}
-	
+
 	return &Post{
 		ID:        post.ID,
 		UserID:    post.UserID,
@@ -159,7 +159,7 @@ func (s *UserService) GetPostByID(postID, userID int) (*Post, error) {
 	if err != nil {
 		likeCount = 0
 	}
-	
+
 	isLiked, err := s.db.IsPostLiked(userID, postID)
 	if err != nil {
 		isLiked = false
@@ -182,7 +182,7 @@ func (s *UserService) GetRecentPosts(userID int, limit int) ([]*Post, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get posts: %w", err)
 	}
-	
+
 	var result []*Post
 	for _, post := range posts {
 		// Get username for each post
@@ -190,18 +190,18 @@ func (s *UserService) GetRecentPosts(userID int, limit int) ([]*Post, error) {
 		if err != nil {
 			continue // Skip posts with invalid users
 		}
-		
+
 		// Calculate like count and check if current user liked it
 		likeCount, err := s.db.GetLikeCount(post.ID)
 		if err != nil {
 			likeCount = 0
 		}
-		
+
 		isLiked, err := s.db.IsPostLiked(userID, post.ID)
 		if err != nil {
 			isLiked = false
 		}
-		
+
 		result = append(result, &Post{
 			ID:        post.ID,
 			UserID:    post.UserID,
@@ -213,7 +213,7 @@ func (s *UserService) GetRecentPosts(userID int, limit int) ([]*Post, error) {
 			IsLiked:   isLiked,
 		})
 	}
-	
+
 	return result, nil
 }
 
@@ -234,7 +234,6 @@ func hashPassword(password string) string {
 func verifyPassword(password, hash string) bool {
 	return hashPassword(password) == hash
 }
-
 
 // Simple session management using a global map (not production-ready)
 var sessions = make(map[string]*User)
@@ -265,7 +264,7 @@ func ExtractUserIDFromPath(path string) (int, error) {
 	if len(parts) < 3 {
 		return 0, fmt.Errorf("invalid path")
 	}
-	
+
 	idStr := parts[len(parts)-1]
 	return strconv.Atoi(idStr)
 }

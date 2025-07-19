@@ -105,7 +105,7 @@ mage runsocial       # Run GoSocial only
 mage build:all       # Build all applications
 mage test:all        # Run all tests
 mage dev:lint        # Run code linting
-mage dev:fmt         # Format code
+mage format          # Format all Go code and tidy modules
 
 # Production
 mage prod:release    # Create production release

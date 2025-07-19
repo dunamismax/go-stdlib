@@ -221,7 +221,7 @@ func (a *App) randomString(w http.ResponseWriter, r *http.Request) {
 	result := make([]byte, length)
 	randomBytes := make([]byte, length)
 	rand.Read(randomBytes)
-	
+
 	for i := range result {
 		result[i] = chars[int(randomBytes[i])%len(chars)]
 	}
@@ -239,7 +239,7 @@ func (a *App) generateUUID(w http.ResponseWriter, r *http.Request) {
 	// Generate UUID using crypto/rand
 	uuid := make([]byte, 16)
 	rand.Read(uuid)
-	
+
 	// Set version (4) and variant bits
 	uuid[6] = (uuid[6] & 0x0f) | 0x40 // Version 4
 	uuid[8] = (uuid[8] & 0x3f) | 0x80 // Variant bits
@@ -341,11 +341,11 @@ func main() {
 	app := NewApp()
 
 	mux := http.NewServeMux()
-	
+
 	// Static files
 	mux.HandleFunc("GET /static/htmx.min.js", app.serveHTMX)
 	mux.HandleFunc("GET /static/styles.css", app.serveCSS)
-	
+
 	// Routes
 	mux.HandleFunc("GET /", app.homePage)
 	mux.HandleFunc("POST /analyze", app.analyzeText)

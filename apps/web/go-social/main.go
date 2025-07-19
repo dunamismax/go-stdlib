@@ -52,7 +52,7 @@ func main() {
 	}
 
 	userService := models.NewUserService(db)
-	
+
 	// Create templates
 	templates := template.New("").Funcs(template.FuncMap{
 		"formatTime": func(t interface{}) string {
@@ -63,7 +63,7 @@ func main() {
 	templates = template.Must(templates.Parse(loginTemplate))
 	templates = template.Must(templates.Parse(registerTemplate))
 	templates = template.Must(templates.Parse(homeTemplate))
-	
+
 	handler := handlers.NewHandler(userService, templates)
 
 	mux := http.NewServeMux()
