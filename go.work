@@ -4,6 +4,7 @@ use (
 	.
 	./apps/web/api-playground
 	./apps/web/go-social
+	./apps/web/gohyperdocs
 	./pkg/components
 	./pkg/database
 	./pkg/middleware

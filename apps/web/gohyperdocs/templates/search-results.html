@@ -1,0 +1,29 @@
+{{define "search-results.html"}}
+<div id="search-results">
+    {{if .Query}}
+        <div class="search-header">
+            <h3>Search Results for "{{.Query}}"</h3>
+            <span class="result-count">{{len .Results}} result{{if ne (len .Results) 1}}s{{end}}</span>
+        </div>
+        
+        {{if .Results}}
+        <div class="search-results-list">
+            {{range .Results}}
+            <div class="search-result-item">
+                <h4><a href="/section/{{.Slug}}">{{.Title}}</a></h4>
+                <p class="result-content">{{.Content | printf "%.150s"}}{{if gt (len .Content) 150}}...{{end}}</p>
+                <div class="result-meta">
+                    <span class="category-badge">{{.Category | titleCase}}</span>
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{else}}
+        <div class="no-results">
+            <p>No results found for "{{.Query}}"</p>
+            <p>Try searching for terms like "htmx", "go", "database", or "templates"</p>
+        </div>
+        {{end}}
+    {{end}}
+</div>
+{{end}}

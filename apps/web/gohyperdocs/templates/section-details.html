@@ -1,0 +1,51 @@
+{{define "section-details.html"}}
+<div class="section-details">
+    <div class="details-header">
+        <h4>Additional Details: {{.Section.Title}}</h4>
+    </div>
+    
+    <div class="details-content">
+        {{if .Section.CodeExample}}
+        <div class="code-section">
+            <div class="code-header">
+                <span class="code-title">Complete Code Example</span>
+                <button class="copy-btn" 
+                        onclick="copyToClipboard(this, {{.Section.CodeExample | printf "%q"}})">
+                    Copy
+                </button>
+            </div>
+            <pre class="code-block"><code>{{.Section.CodeExample}}</code></pre>
+        </div>
+        {{end}}
+
+        <div class="implementation-notes">
+            <h5>Implementation Notes</h5>
+            <ul>
+                {{if eq .Section.Category "htmx-features"}}
+                <li>This feature leverages HTMX's declarative approach to dynamic web interactions</li>
+                <li>No JavaScript frameworks required - everything is driven by hypermedia</li>
+                <li>Server-side rendering ensures SEO compatibility and fast initial page loads</li>
+                {{else if eq .Section.Category "go-backend"}}
+                <li>Uses only Go's standard library for maximum stability and minimal dependencies</li>
+                <li>Type-safe implementation with compile-time guarantees</li>
+                <li>Optimized for performance with built-in concurrency support</li>
+                {{else if eq .Section.Category "deployment"}}
+                <li>Single binary deployment simplifies infrastructure requirements</li>
+                <li>Embedded assets eliminate external file dependencies</li>
+                <li>Cross-platform compilation support for multiple target environments</li>
+                {{else}}
+                <li>Part of the comprehensive Go hypermedia stack demonstration</li>
+                <li>Showcases modern web development with traditional technologies</li>
+                <li>Emphasizes simplicity and maintainability over complexity</li>
+                {{end}}
+            </ul>
+        </div>
+
+        <div class="related-sections">
+            <h5>Related Topics</h5>
+            <p>Explore other sections to see how this concept integrates with the broader stack.</p>
+            <a href="/category/{{.Section.Category}}" class="btn btn-secondary">View All {{.Section.Category | titleCase}}</a>
+        </div>
+    </div>
+</div>
+{{end}}

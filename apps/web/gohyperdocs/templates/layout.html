@@ -1,0 +1,103 @@
+{{define "layout.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/htmx.min.js"></script>
+</head>
+<body hx-boost="true">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/">GoHyperDocs</a>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/category/getting-started" class="nav-link">Getting Started</a>
+                <a href="/category/htmx-features" class="nav-link">HTMX Features</a>
+                <a href="/category/go-backend" class="nav-link">Go Backend</a>
+                <a href="/category/deployment" class="nav-link">Deployment</a>
+            </div>
+            <div class="nav-search">
+                <input type="search" 
+                       id="search-input"
+                       hx-get="/api/search" 
+                       hx-target="#search-results"
+                       hx-trigger="input changed delay:300ms"
+                       hx-vals="js:{q: document.getElementById('search-input').value}"
+                       placeholder="Search docs..."
+                       class="search-input">
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                {{if .Categories}}
+                    {{range $category, $sections := .Categories}}
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <a href="/category/{{$category}}">{{$category | titleCase}}</a>
+                        </h3>
+                        <ul class="sidebar-list">
+                            {{range $sections}}
+                            <li><a href="/section/{{.Slug}}" class="sidebar-link">{{.Title}}</a></li>
+                            {{end}}
+                        </ul>
+                    </div>
+                    {{end}}
+                {{end}}
+            </aside>
+
+            <main class="main-content" id="main-content">
+                {{template "content" .}}
+            </main>
+        </div>
+
+        <div id="search-results" class="search-results"></div>
+    </div>
+
+    <script>
+        // Copy to clipboard functionality
+        function copyToClipboard(button, code) {
+            navigator.clipboard.writeText(code).then(function() {
+                // Trigger HTMX call to update button state
+                htmx.ajax('POST', '/api/copy', {
+                    target: button,
+                    swap: 'outerHTML'
+                });
+                
+                // Reset button after 2 seconds
+                setTimeout(function() {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                    button.disabled = false;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Add loading indicators
+        document.body.addEventListener('htmx:beforeRequest', function(evt) {
+            const target = evt.target;
+            if (target.classList.contains('lazy-load-btn')) {
+                target.innerHTML = '<span class="spinner"></span> Loading...';
+                target.disabled = true;
+            }
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            const target = evt.target;
+            if (target.classList.contains('lazy-load-btn')) {
+                target.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+{{end}}

@@ -27,6 +27,7 @@ const (
 	scriptsDir       = "./scripts"
 	apiPlaygroundDir = "./apps/web/api-playground"
 	goSocialDir      = "./apps/web/go-social"
+	goHyperDocsDir   = "./apps/web/gohyperdocs"
 	componentsDir    = "./pkg/components"
 	databaseDir      = "./pkg/database"
 	middlewareDir    = "./pkg/middleware"
@@ -38,6 +39,7 @@ const (
 const (
 	apiPlaygroundBin = "./build/api-playground"
 	goSocialBin      = "./build/go-social"
+	goHyperDocsBin   = "./build/gohyperdocs"
 )
 
 // Colors for output
@@ -107,6 +109,7 @@ func Help() {
 	fmt.Println("  mage build:web       Build web applications")
 	fmt.Println("  mage build:api       Build API playground")
 	fmt.Println("  mage build:social    Build GoSocial")
+	fmt.Println("  mage build:docs      Build GoHyperDocs")
 	fmt.Println()
 	colorPrint(colorBlue, "Test Commands:")
 	fmt.Println("  mage test:all        Run all tests")
@@ -127,8 +130,10 @@ func Help() {
 	colorPrint(colorBlue, "Individual App Commands:")
 	fmt.Println("  mage runapi          Run API playground only")
 	fmt.Println("  mage runsocial       Run GoSocial only")
+	fmt.Println("  mage rundocs         Run GoHyperDocs only")
 	fmt.Println("  mage runapiwithair   Run API playground with Air live reload")
 	fmt.Println("  mage runsocialwithair Run GoSocial with Air live reload")
+	fmt.Println("  mage rundocswithair  Run GoHyperDocs with Air live reload")
 }
 
 // Clean removes build artifacts and caches
@@ -266,6 +271,7 @@ func (Dev) Deps() error {
 	modules := []string{
 		apiPlaygroundDir,
 		goSocialDir,
+		goHyperDocsDir,
 		componentsDir,
 		databaseDir,
 		middlewareDir,
@@ -293,6 +299,7 @@ func (Dev) Tidy() error {
 	modules := []string{
 		apiPlaygroundDir,
 		goSocialDir,
+		goHyperDocsDir,
 		componentsDir,
 		databaseDir,
 		middlewareDir,
@@ -332,6 +339,7 @@ func (Dev) Lint() error {
 	modules := []string{
 		apiPlaygroundDir,
 		goSocialDir,
+		goHyperDocsDir,
 		componentsDir,
 		databaseDir,
 		middlewareDir,
@@ -362,9 +370,10 @@ func (Dev) Start() error {
 	colorPrint(colorCyan, "🌐 Applications running:")
 	colorPrint(colorGreen, "  API Playground: http://localhost:8080")
 	colorPrint(colorGreen, "  GoSocial: http://localhost:8081")
+	colorPrint(colorGreen, "  GoHyperDocs: http://localhost:8082")
 	colorPrint(colorYellow, "Press Ctrl+C to stop all services")
 
-	return runConcurrently([]string{apiPlaygroundBin, goSocialBin})
+	return runConcurrently([]string{apiPlaygroundBin, goSocialBin, goHyperDocsBin})
 }
 
 // StartWithAir starts development with Air live reloading
@@ -380,11 +389,12 @@ func (Dev) StartWithAir() error {
 	colorPrint(colorCyan, "🌐 Applications with live reloading:")
 	colorPrint(colorGreen, "  API Playground: http://localhost:8080")
 	colorPrint(colorGreen, "  GoSocial: http://localhost:8081")
+	colorPrint(colorGreen, "  GoHyperDocs: http://localhost:8082")
 	colorPrint(colorYellow, "Press Ctrl+C to stop all services")
 
-	// Start both apps with Air
+	// Start all apps with Air
 	var wg sync.WaitGroup
-	errChan := make(chan error, 2)
+	errChan := make(chan error, 3)
 
 	// Start API Playground with Air
 	wg.Add(1)
@@ -401,6 +411,15 @@ func (Dev) StartWithAir() error {
 		defer wg.Done()
 		if err := sh.RunWith(map[string]string{"PWD": goSocialDir}, "air"); err != nil {
 			errChan <- fmt.Errorf("GoSocial failed: %w", err)
+		}
+	}()
+
+	// Start GoHyperDocs with Air
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := sh.RunWith(map[string]string{"PWD": goHyperDocsDir}, "air"); err != nil {
+			errChan <- fmt.Errorf("GoHyperDocs failed: %w", err)
 		}
 	}()
 
@@ -456,7 +475,7 @@ func (Build) All() error {
 
 // Web builds all web applications
 func (Build) Web() error {
-	mg.Deps(Build.API, Build.Social)
+	mg.Deps(Build.API, Build.Social, Build.Docs)
 	return nil
 }
 
@@ -492,6 +511,22 @@ func (Build) Social() error {
 	return nil
 }
 
+// Docs builds the GoHyperDocs web app
+func (Build) Docs() error {
+	printSection("Building GoHyperDocs...")
+
+	if err := os.MkdirAll(buildDir, 0755); err != nil {
+		return err
+	}
+
+	if err := sh.Run("go", "build", "-o", goHyperDocsBin, goHyperDocsDir); err != nil {
+		return err
+	}
+
+	printSuccess(fmt.Sprintf("GoHyperDocs built: %s", goHyperDocsBin))
+	return nil
+}
+
 // showBuildResults displays build results
 func (Build) showBuildResults() error {
 	files, err := filepath.Glob(filepath.Join(buildDir, "*"))
@@ -517,6 +552,7 @@ func (Test) All() error {
 	modules := []string{
 		apiPlaygroundDir,
 		goSocialDir,
+		goHyperDocsDir,
 		componentsDir,
 		databaseDir,
 		middlewareDir,
@@ -602,6 +638,7 @@ func (Tools) Upgrade() error {
 	modules := []string{
 		apiPlaygroundDir,
 		goSocialDir,
+		goHyperDocsDir,
 		componentsDir,
 		databaseDir,
 		middlewareDir,
@@ -689,6 +726,7 @@ func Format() error {
 	modules := []string{
 		apiPlaygroundDir,
 		goSocialDir,
+		goHyperDocsDir,
 		componentsDir,
 		databaseDir,
 		middlewareDir,
@@ -782,6 +820,27 @@ func RunSocialWithAir() error {
 
 	colorPrint(colorCyan, "🌐 GoSocial with live reload: http://localhost:8081")
 	return sh.RunWith(map[string]string{"PWD": goSocialDir}, "air")
+}
+
+// RunDocs runs GoHyperDocs only
+func RunDocs() error {
+	mg.Deps(Build.Docs)
+	colorPrint(colorCyan, "🌐 GoHyperDocs: http://localhost:8082")
+	return sh.Run(goHyperDocsBin)
+}
+
+// RunDocsWithAir runs GoHyperDocs with Air live reloading
+func RunDocsWithAir() error {
+	printSection("Starting GoHyperDocs with Air...")
+
+	// Check if Air is installed
+	if _, err := exec.LookPath("air"); err != nil {
+		printError("Air not installed. Run 'mage tools:install' first")
+		return err
+	}
+
+	colorPrint(colorCyan, "🌐 GoHyperDocs with live reload: http://localhost:8082")
+	return sh.RunWith(map[string]string{"PWD": goHyperDocsDir}, "air")
 }
 
 // Docs generates documentation

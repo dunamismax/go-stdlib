@@ -1,0 +1,90 @@
+{{define "content"}}
+<div class="hero">
+    <h1>GoHyperDocs</h1>
+    <p class="hero-subtitle">The definitive documentation platform demonstrating the power and elegance of a pure Go hypermedia stack</p>
+    <div class="hero-features">
+        <div class="feature">
+            <h3>🚀 SPA-like Navigation</h3>
+            <p>Blazing-fast page transitions with hx-boost</p>
+        </div>
+        <div class="feature">
+            <h3>⚡ Lazy Loading</h3>
+            <p>On-demand content loading for optimal performance</p>
+        </div>
+        <div class="feature">
+            <h3>📋 Interactive Code</h3>
+            <p>Copy-to-clipboard with server coordination</p>
+        </div>
+        <div class="feature">
+            <h3>🔍 Smart Search</h3>
+            <p>Real-time search with surgical DOM updates</p>
+        </div>
+    </div>
+</div>
+
+<div class="tech-stack">
+    <h2>Tech Stack Showcase</h2>
+    <div class="stack-grid">
+        <div class="stack-item">
+            <h3>Go Standard Library</h3>
+            <p>net/http for routing, html/template for rendering</p>
+            <span class="badge">Zero Dependencies</span>
+        </div>
+        <div class="stack-item">
+            <h3>HTMX</h3>
+            <p>Dynamic interactions without JavaScript frameworks</p>
+            <span class="badge">Hypermedia Driven</span>
+        </div>
+        <div class="stack-item">
+            <h3>SQLite</h3>
+            <p>Embedded database with CGO-free driver</p>
+            <span class="badge">Single Binary</span>
+        </div>
+        <div class="stack-item">
+            <h3>Vanilla CSS</h3>
+            <p>Modern styling without framework overhead</p>
+            <span class="badge">Performance First</span>
+        </div>
+    </div>
+</div>
+
+<div class="documentation-sections">
+    <h2>Documentation Categories</h2>
+    {{if .Categories}}
+        {{range $category, $sections := .Categories}}
+        <div class="category-section">
+            <h3 class="category-title">
+                <a href="/category/{{$category}}">{{$category}}</a>
+            </h3>
+            <div class="sections-grid">
+                {{range $sections}}
+                <div class="section-card">
+                    <h4><a href="/section/{{.Slug}}">{{.Title}}</a></h4>
+                    <p>{{.Content | printf "%.100s"}}{{if gt (len .Content) 100}}...{{end}}</p>
+                    
+                    {{if .CodeExample}}
+                    <button class="lazy-load-btn"
+                            hx-get="/api/details/{{.Slug}}"
+                            hx-target="#details-{{.ID}}"
+                            hx-swap="innerHTML">
+                        Show Code Example
+                    </button>
+                    <div id="details-{{.ID}}" class="code-details"></div>
+                    {{end}}
+                </div>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+    {{end}}
+</div>
+
+<div class="call-to-action">
+    <h2>Experience the Power of Go Hypermedia</h2>
+    <p>This entire platform is compiled into a single, self-contained Go binary with zero external dependencies. Every feature you see demonstrates the elegant synergy between Go's standard library and HTMX's hypermedia approach.</p>
+    <div class="cta-buttons">
+        <a href="/category/getting-started" class="btn btn-primary">Get Started</a>
+        <a href="/category/htmx-features" class="btn btn-secondary">Explore HTMX Features</a>
+    </div>
+</div>
+{{end}}

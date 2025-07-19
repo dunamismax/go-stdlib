@@ -1,0 +1,407 @@
+{{define "home.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/htmx.min.js"></script>
+</head>
+<body hx-boost="true">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="/">GoHyperDocs</a>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/category/getting-started" class="nav-link">Getting Started</a>
+                <a href="/category/htmx-features" class="nav-link">HTMX Features</a>
+                <a href="/category/go-backend" class="nav-link">Go Backend</a>
+                <a href="/category/deployment" class="nav-link">Deployment</a>
+                <a href="/category/optimization" class="nav-link">Optimization</a>
+                <a href="/category/security" class="nav-link">Security</a>
+            </div>
+            <div class="nav-search">
+                <input type="search" 
+                       id="search-input"
+                       hx-get="/api/search" 
+                       hx-target="#search-results"
+                       hx-trigger="input changed delay:300ms"
+                       hx-vals="js:{q: document.getElementById('search-input').value}"
+                       placeholder="Search docs..."
+                       class="search-input">
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                {{if .Categories}}
+                    {{range $category, $sections := .Categories}}
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <a href="/category/{{$category}}">{{$category}}</a>
+                        </h3>
+                        <ul class="sidebar-list">
+                            {{range $sections}}
+                            <li><a href="/section/{{.Slug}}" class="sidebar-link">{{.Title}}</a></li>
+                            {{end}}
+                        </ul>
+                    </div>
+                    {{end}}
+                {{end}}
+            </aside>
+
+            <main class="main-content" id="main-content">
+                <div class="hero">
+                    <h1>GoHyperDocs</h1>
+                    <p class="hero-subtitle">The ultimate Go hypermedia stack demonstration. Discover how to build lightning-fast, maintainable web applications using only Go's standard library and HTMX. No frameworks, no complexity, just pure elegance.</p>
+                    <div class="hero-features">
+                        <div class="feature">
+                            <h3>⚡ Lightning Fast</h3>
+                            <p>Sub-millisecond response times with compiled Go code and zero-latency SQLite</p>
+                        </div>
+                        <div class="feature">
+                            <h3>🔗 Hypermedia Driven</h3>
+                            <p>Rich interactions through HTML over the wire - no JSON APIs or client-side complexity</p>
+                        </div>
+                        <div class="feature">
+                            <h3>🛠️ Zero Dependencies</h3>
+                            <p>Built entirely with Go's standard library - deploy anywhere, run forever</p>
+                        </div>
+                        <div class="feature">
+                            <h3>📦 Single Binary</h3>
+                            <p>Everything embedded: templates, assets, database - just copy and run</p>
+                        </div>
+                        <div class="feature">
+                            <h3>🔒 Secure by Default</h3>
+                            <p>Automatic XSS protection with html/template and secure coding practices</p>
+                        </div>
+                        <div class="feature">
+                            <h3>🎯 Progressive Enhancement</h3>
+                            <p>Works without JavaScript, enhanced with HTMX - accessible to everyone</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <h2>The Ultimate Go Stack</h2>
+                    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem; font-size: 1.2rem; max-width: 800px; margin-left: auto; margin-right: auto;">Each technology was carefully chosen for stability, performance, and longevity. This stack will remain relevant and maintainable for decades.</p>
+                    <div class="stack-grid">
+                        <div class="stack-item">
+                            <h3>Go + net/http.ServeMux</h3>
+                            <p>Modern routing with method patterns, path parameters, and middleware chains. Go 1.22+ brings powerful routing capabilities that rival any framework.</p>
+                            <div class="tech-benefits">
+                                <span class="benefit">🚀 Compile-time safety</span>
+                                <span class="benefit">⚡ Sub-microsecond routing</span>
+                                <span class="benefit">🔧 Built-in concurrency</span>
+                            </div>
+                            <span class="badge">Pure Go</span>
+                        </div>
+                        <div class="stack-item">
+                            <h3>HTMX + html/template</h3>
+                            <p>Hypermedia-driven interfaces that work without JavaScript. Rich interactions through HTML over the wire with automatic XSS protection.</p>
+                            <div class="tech-benefits">
+                                <span class="benefit">🎯 Progressive enhancement</span>
+                                <span class="benefit">♿ Accessible by default</span>
+                                <span class="benefit">🔒 XSS protection</span>
+                            </div>
+                            <span class="badge">Hypermedia</span>
+                        </div>
+                        <div class="stack-item">
+                            <h3>SQLite + CGO-free</h3>
+                            <p>Zero-latency embedded database with full SQL support. Using modernc.org/sqlite for true single-binary deployment without CGO.</p>
+                            <div class="tech-benefits">
+                                <span class="benefit">📊 50K+ queries/sec</span>
+                                <span class="benefit">📁 Single file database</span>
+                                <span class="benefit">🔄 ACID transactions</span>
+                            </div>
+                            <span class="badge">Self-Contained</span>
+                        </div>
+                        <div class="stack-item">
+                            <h3>Mage + Air</h3>
+                            <p>Go-based build system with live reloading for the best developer experience. Write your build scripts in Go, not shell scripts or YAML.</p>
+                            <div class="tech-benefits">
+                                <span class="benefit">🛠️ Go-based builds</span>
+                                <span class="benefit">🔄 Live reloading</span>
+                                <span class="benefit">📦 Cross-compilation</span>
+                            </div>
+                            <span class="badge">Developer Experience</span>
+                        </div>
+                        <div class="stack-item">
+                            <h3>go:embed + Static Assets</h3>
+                            <p>All templates, CSS, JavaScript, and assets embedded directly in the binary. No external files, no CDN dependencies, no security vulnerabilities.</p>
+                            <div class="tech-benefits">
+                                <span class="benefit">📦 Single binary</span>
+                                <span class="benefit">🔒 No external deps</span>
+                                <span class="benefit">⚡ Instant loading</span>
+                            </div>
+                            <span class="badge">Embedded</span>
+                        </div>
+                        <div class="stack-item">
+                            <h3>Vanilla CSS + Modern Features</h3>
+                            <p>Hand-crafted CSS with CSS Grid, Flexbox, and custom properties. No build tools, no preprocessors, just modern CSS that works everywhere.</p>
+                            <div class="tech-benefits">
+                                <span class="benefit">🎨 Custom properties</span>
+                                <span class="benefit">📱 Responsive design</span>
+                                <span class="benefit">✨ Smooth animations</span>
+                            </div>
+                            <span class="badge">Modern CSS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="documentation-sections">
+                    <h2>Documentation Categories</h2>
+                    {{if .Categories}}
+                        {{range $category, $sections := .Categories}}
+                        <div class="category-section">
+                            <h3 class="category-title">
+                                <a href="/category/{{$category}}">{{$category}}</a>
+                            </h3>
+                            <div class="sections-grid">
+                                {{range $sections}}
+                                <div class="section-card">
+                                    <h4><a href="/section/{{.Slug}}">{{.Title}}</a></h4>
+                                    <p>{{.Content | printf "%.100s"}}{{if gt (len .Content) 100}}...{{end}}</p>
+                                    
+                                    {{if .CodeExample}}
+                                    <button class="lazy-load-btn"
+                                            hx-get="/api/details/{{.Slug}}"
+                                            hx-target="#details-{{.ID}}"
+                                            hx-swap="innerHTML">
+                                        Show Code Example
+                                    </button>
+                                    <div id="details-{{.ID}}" class="code-details"></div>
+                                    {{end}}
+                                </div>
+                                {{end}}
+                            </div>
+                        </div>
+                        {{end}}
+                    {{end}}
+                </div>
+
+                <!-- Interactive Demonstrations -->
+                <div class="interactive-demos">
+                    <h2>Interactive HTMX Demonstrations</h2>
+                    <p style="text-align: center; color: var(--text-secondary); margin-bottom: 3rem; font-size: 1.1rem;">Experience the power of hypermedia-driven interfaces. All interactions below are powered by HTMX and Go.</p>
+                    
+                    <div class="demo-grid">
+                        <!-- Live Counter Demo -->
+                        <div class="demo-section">
+                            <h3>📊 Live Server Stats</h3>
+                            <p>Real-time server metrics updated every 3 seconds using <code>hx-trigger="every 3s"</code></p>
+                            <div hx-get="/api/demo/live-counter" 
+                                 hx-trigger="load, every 3s" 
+                                 hx-target="this" 
+                                 hx-swap="innerHTML">
+                                <div class="live-demo-card">
+                                    <h4>Loading...</h4>
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Validation Demo -->
+                        <div class="demo-section">
+                            <h3>✅ Real-time Form Validation</h3>
+                            <p>Instant email validation with server-side logic using <code>hx-trigger="input changed delay:500ms"</code></p>
+                            <div class="validation-demo">
+                                <input type="email" 
+                                       placeholder="Enter your email..." 
+                                       hx-get="/api/demo/validate-email" 
+                                       hx-trigger="input changed delay:500ms" 
+                                       hx-target="#email-validation"
+                                       hx-vals="js:{email: this.value}"
+                                       style="width: 100%; padding: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-primary); border-radius: 8px; color: var(--text-primary); margin-bottom: 0.5rem;">
+                                <div id="email-validation"></div>
+                            </div>
+                        </div>
+
+                        <!-- Todo List Demo -->
+                        <div class="demo-section">
+                            <h3>📝 Dynamic Todo List</h3>
+                            <p>Add and remove items dynamically with HTMX form handling and DOM manipulation</p>
+                            <div hx-get="/api/demo/todo" 
+                                 hx-trigger="load" 
+                                 hx-target="this" 
+                                 hx-swap="innerHTML">
+                                Loading todo demo...
+                            </div>
+                        </div>
+
+                        <!-- Tab Navigation Demo -->
+                        <div class="demo-section">
+                            <h3>🗂️ Dynamic Tab Navigation</h3>
+                            <p>Seamless tab switching with content loading using <code>hx-get</code> and <code>hx-target</code></p>
+                            <div class="tab-demo">
+                                <div class="tab-navigation">
+                                    <button class="tab-button active" 
+                                            hx-get="/api/demo/tabs?tab=overview" 
+                                            hx-target="#tab-content"
+                                            onclick="setActiveTab(this)">
+                                        Overview
+                                    </button>
+                                    <button class="tab-button" 
+                                            hx-get="/api/demo/tabs?tab=features" 
+                                            hx-target="#tab-content"
+                                            onclick="setActiveTab(this)">
+                                        Features
+                                    </button>
+                                    <button class="tab-button" 
+                                            hx-get="/api/demo/tabs?tab=performance" 
+                                            hx-target="#tab-content"
+                                            onclick="setActiveTab(this)">
+                                        Performance
+                                    </button>
+                                </div>
+                                <div id="tab-content" 
+                                     hx-get="/api/demo/tabs?tab=overview" 
+                                     hx-trigger="load">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Load More Demo -->
+                        <div class="demo-section">
+                            <h3>🔄 Lazy Loading Content</h3>
+                            <p>Load additional content on demand with loading states and smooth animations</p>
+                            <button class="btn btn-primary" 
+                                    hx-get="/api/demo/load-more" 
+                                    hx-target="#load-more-content" 
+                                    hx-swap="innerHTML"
+                                    hx-indicator="#load-spinner">
+                                Load More Features
+                            </button>
+                            <div id="load-spinner" class="htmx-indicator" style="margin: 1rem 0;">
+                                <div class="spinner"></div> Loading amazing features...
+                            </div>
+                            <div id="load-more-content" style="margin-top: 1rem;">
+                                <!-- Content loads here -->
+                            </div>
+                        </div>
+
+                        <!-- Performance Showcase -->
+                        <div class="demo-section">
+                            <h3>⚡ Performance Showcase</h3>
+                            <p>All these interactions happen with zero JavaScript frameworks - just hypermedia and Go!</p>
+                            <div class="performance-stats">
+                                <div class="metric">
+                                    <span class="metric-value">0.2ms</span>
+                                    <span class="metric-label">Response Time</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-value">12MB</span>
+                                    <span class="metric-label">Binary Size</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-value">0</span>
+                                    <span class="metric-label">Dependencies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="call-to-action">
+                    <h2>Ready to Experience the Future?</h2>
+                    <p>This entire application runs on a single 12MB binary with zero dependencies. It handles thousands of concurrent users, responds in sub-milliseconds, and deploys anywhere. Ready to abandon the complexity and embrace simplicity?</p>
+                    <div class="cta-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                        <div class="cta-stat">
+                            <span class="stat-value">0.2ms</span>
+                            <span class="stat-label">Response Time</span>
+                        </div>
+                        <div class="cta-stat">
+                            <span class="stat-value">12MB</span>
+                            <span class="stat-label">Binary Size</span>
+                        </div>
+                        <div class="cta-stat">
+                            <span class="stat-value">10K+</span>
+                            <span class="stat-label">Concurrent Users</span>
+                        </div>
+                        <div class="cta-stat">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">Dependencies</span>
+                        </div>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="/category/getting-started" class="btn btn-primary">Start Your Journey</a>
+                        <a href="/category/htmx-features" class="btn btn-secondary">See It In Action</a>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="search-results" class="search-results"></div>
+    </div>
+
+    <script>
+        // Copy to clipboard functionality
+        function copyToClipboard(button, code) {
+            navigator.clipboard.writeText(code).then(function() {
+                // Trigger HTMX call to update button state
+                htmx.ajax('POST', '/api/copy', {
+                    target: button,
+                    swap: 'outerHTML'
+                });
+                
+                // Reset button after 2 seconds
+                setTimeout(function() {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                    button.disabled = false;
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Failed to copy: ', err);
+            });
+        }
+
+        // Tab switching functionality
+        function setActiveTab(clickedButton) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab-button').forEach(function(btn) {
+                btn.classList.remove('active');
+            });
+            // Add active class to clicked tab
+            clickedButton.classList.add('active');
+        }
+
+        // Add loading indicators
+        document.body.addEventListener('htmx:beforeRequest', function(evt) {
+            const target = evt.target;
+            if (target.classList.contains('lazy-load-btn')) {
+                target.innerHTML = '<span class="spinner"></span> Loading...';
+                target.disabled = true;
+            }
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            const target = evt.target;
+            if (target.classList.contains('lazy-load-btn')) {
+                target.style.display = 'none';
+            }
+        });
+
+        // Add smooth transitions for HTMX swaps
+        document.body.addEventListener('htmx:beforeSwap', function(evt) {
+            if (evt.target.id === 'tab-content') {
+                evt.target.style.opacity = '0.5';
+                evt.target.style.transform = 'translateY(10px)';
+            }
+        });
+
+        document.body.addEventListener('htmx:afterSettle', function(evt) {
+            if (evt.target.id === 'tab-content') {
+                evt.target.style.opacity = '1';
+                evt.target.style.transform = 'translateY(0)';
+            }
+        });
+    </script>
+</body>
+</html>
+{{end}}

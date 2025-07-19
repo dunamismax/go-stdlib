@@ -75,6 +75,11 @@ func (db *DB) Close() error {
 	return db.conn.Close()
 }
 
+// GetConnection returns the underlying sql.DB connection
+func (db *DB) GetConnection() *sql.DB {
+	return db.conn
+}
+
 func (db *DB) Migrate() error {
 	slog.Info("Running database migrations")
 	// Create tables
