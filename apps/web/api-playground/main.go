@@ -54,23 +54,23 @@ type App struct {
 
 func NewApp() *App {
 	e := echo.New()
-	
+
 	// Configure Echo
 	e.HideBanner = true
 	e.Renderer = NewTemplateRenderer()
-	
+
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	e.Use(middleware.Secure())
 	e.Use(middleware.RequestID())
-	
+
 	// Custom middleware for structured logging
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "${time_rfc3339} ${id} ${remote_ip} ${host} ${method} ${uri} ${user_agent} ${status} ${error} ${latency} ${latency_human} ${bytes_in} ${bytes_out}\n",
 	}))
-	
+
 	return &App{echo: e}
 }
 
