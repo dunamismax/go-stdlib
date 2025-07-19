@@ -254,9 +254,9 @@ bearer_token
 # Development Tools
 # =============================================================================
 
-# Air (live reload)
-.air.toml
+# Air (live reload) - Keep config files but ignore tmp
 tmp/
+build-errors.log
 
 # Delve debugger
 debug

@@ -90,12 +90,13 @@ type Prod mg.Namespace
 
 // Help displays available targets
 func Help() {
-	colorPrint(colorCyan, "Go Chi Monorepo - The Ultimate Hypermedia-Driven Web Stack")
-	fmt.Println("================================================================")
+	colorPrint(colorCyan, "Go Standard Library Web Stack - The Ultimate Hypermedia-Driven Web Stack")
+	fmt.Println("===========================================================================")
 	fmt.Println()
 	colorPrint(colorBlue, "Development Commands:")
 	fmt.Println("  mage dev:init        Initialize development environment")
 	fmt.Println("  mage dev:start       Start development environment")
+	fmt.Println("  mage dev:startwithair Start with Air live reloading")
 	fmt.Println("  mage dev:deps        Download all dependencies")
 	fmt.Println("  mage dev:tidy        Tidy all Go modules")
 	fmt.Println("  mage dev:fmt         Format all Go code")
@@ -125,6 +126,8 @@ func Help() {
 	colorPrint(colorBlue, "Individual App Commands:")
 	fmt.Println("  mage runapi          Run API playground only")
 	fmt.Println("  mage runsocial       Run GoSocial only")
+	fmt.Println("  mage runapiwithair   Run API playground with Air live reload")
+	fmt.Println("  mage runsocialwithair Run GoSocial with Air live reload")
 }
 
 // Clean removes build artifacts and caches
@@ -145,8 +148,8 @@ func Clean() error {
 
 // Status shows project status and statistics
 func Status() error {
-	colorPrint(colorCyan, "Go Chi Monorepo - The Ultimate Hypermedia-Driven Web Stack")
-	fmt.Println("===========================================================")
+	colorPrint(colorCyan, "Go Standard Library Web Stack - The Ultimate Hypermedia-Driven Web Stack")
+	fmt.Println("==========================================================================")
 	fmt.Println()
 
 	// Project structure
@@ -160,11 +163,12 @@ func Status() error {
 
 	// Tech Stack
 	colorPrint(colorBlue, "🔧 Tech Stack:")
-	fmt.Println("  Backend:      Go + Chi Router")
-	fmt.Println("  Frontend:     HTMX + Gomponents")
-	fmt.Println("  Database:     SQLite")
+	fmt.Println("  Backend:      Go + net/http")
+	fmt.Println("  Frontend:     HTMX + html/template")
+	fmt.Println("  Database:     SQLite (CGO-free)")
 	fmt.Println("  Styling:      Vanilla CSS")
 	fmt.Println("  Build:        Mage")
+	fmt.Println("  Live Reload:  Air")
 	fmt.Println()
 
 	// Applications
@@ -362,6 +366,55 @@ func (Dev) Start() error {
 	return runConcurrently([]string{apiPlaygroundBin, goSocialBin})
 }
 
+// StartWithAir starts development with Air live reloading
+func (Dev) StartWithAir() error {
+	printSection("Starting with Air live reloading...")
+
+	// Check if Air is installed
+	if _, err := exec.LookPath("air"); err != nil {
+		printError("Air not installed. Run 'mage tools:install' first")
+		return err
+	}
+
+	colorPrint(colorCyan, "🌐 Applications with live reloading:")
+	colorPrint(colorGreen, "  API Playground: http://localhost:8080")
+	colorPrint(colorGreen, "  GoSocial: http://localhost:8081")
+	colorPrint(colorYellow, "Press Ctrl+C to stop all services")
+
+	// Start both apps with Air
+	var wg sync.WaitGroup
+	errChan := make(chan error, 2)
+
+	// Start API Playground with Air
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := sh.RunWith(map[string]string{"PWD": apiPlaygroundDir}, "air"); err != nil {
+			errChan <- fmt.Errorf("API Playground failed: %w", err)
+		}
+	}()
+
+	// Start GoSocial with Air
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := sh.RunWith(map[string]string{"PWD": goSocialDir}, "air"); err != nil {
+			errChan <- fmt.Errorf("GoSocial failed: %w", err)
+		}
+	}()
+
+	wg.Wait()
+	close(errChan)
+
+	for err := range errChan {
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // runConcurrently runs multiple commands concurrently
 func runConcurrently(commands []string) error {
 	var wg sync.WaitGroup
@@ -512,6 +565,14 @@ func (Test) Security() error {
 func (Tools) Install() error {
 	printSection("Installing development tools...")
 
+	// Install Air
+	if _, err := exec.LookPath("air"); err != nil {
+		fmt.Println("  📦 Installing Air live reload...")
+		if err := sh.Run("go", "install", "github.com/air-verse/air@latest"); err != nil {
+			return err
+		}
+	}
+
 	// Install golangci-lint
 	if _, err := exec.LookPath("golangci-lint"); err != nil {
 		fmt.Println("  📦 Installing golangci-lint...")
@@ -605,7 +666,7 @@ func (Prod) Release() error {
 	}
 
 	// Create tarball
-	tarFile := filepath.Join(buildDir, "go-chi-release.tar.gz")
+	tarFile := filepath.Join(buildDir, "go-stdlib-release.tar.gz")
 	if err := sh.RunV("tar", "-czf", tarFile, "-C", releaseDir, "."); err != nil {
 		return err
 	}
@@ -658,6 +719,34 @@ func RunSocial() error {
 	mg.Deps(Build.Social)
 	colorPrint(colorCyan, "🌐 GoSocial: http://localhost:8081")
 	return sh.Run(goSocialBin)
+}
+
+// RunAPIWithAir runs API playground with Air live reloading
+func RunAPIWithAir() error {
+	printSection("Starting API Playground with Air...")
+	
+	// Check if Air is installed
+	if _, err := exec.LookPath("air"); err != nil {
+		printError("Air not installed. Run 'mage tools:install' first")
+		return err
+	}
+
+	colorPrint(colorCyan, "🌐 API Playground with live reload: http://localhost:8080")
+	return sh.RunWith(map[string]string{"PWD": apiPlaygroundDir}, "air")
+}
+
+// RunSocialWithAir runs GoSocial with Air live reloading
+func RunSocialWithAir() error {
+	printSection("Starting GoSocial with Air...")
+	
+	// Check if Air is installed
+	if _, err := exec.LookPath("air"); err != nil {
+		printError("Air not installed. Run 'mage tools:install' first")
+		return err
+	}
+
+	colorPrint(colorCyan, "🌐 GoSocial with live reload: http://localhost:8081")
+	return sh.RunWith(map[string]string{"PWD": goSocialDir}, "air")
 }
 
 // Docs generates documentation

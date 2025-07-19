@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/dunamismax/go-stdlib">
-    <img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&size=24&pause=1000&color=00ADD8&center=true&vCenter=true&width=800&lines=The+Ultimate+Go+Standard+Library+Web+Stack;Go+%2B+http.ServeMux+%2B+HTMX+%2B+html/template;Single-Binary+Deployment;SQLite+%2B+Vanilla+CSS;Mage+Build+System" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&size=24&pause=1000&color=00ADD8&center=true&vCenter=true&width=800&lines=The+Ultimate+Go+Standard+Library+Web+Stack;Go+%2B+http.ServeMux+%2B+HTMX+%2B+html/template;Single-Binary+Deployment;SQLite+%2B+Vanilla+CSS;Mage+Build+System+%2B+Air+Live+Reload" alt="Typing SVG" />
   </a>
 </p>
 
@@ -15,6 +15,7 @@
   <a href="https://pkg.go.dev/html/template"><img src="https://img.shields.io/badge/Templates-html/template-00ADD8.svg?logo=go" alt="Standard Library Templates"></a>
   <a href="https://sqlite.org/"><img src="https://img.shields.io/badge/SQLite-3.0+-003B57.svg?logo=sqlite" alt="SQLite Version"></a>
   <a href="https://magefile.org/"><img src="https://img.shields.io/badge/Mage-1.15+-purple.svg?logo=go" alt="Mage Version"></a>
+  <a href="https://github.com/air-verse/air"><img src="https://img.shields.io/badge/Air-Live%20Reload-FF6B6B.svg" alt="Air Live Reload"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
 </p>
 
@@ -34,14 +35,15 @@ A monorepo showcasing **The Ultimate Go Standard Library Web Stack** - built for
 
 ## Tech Stack
 
-| Layer         | Technology                                                          | Purpose                                 |
-| ------------- | ------------------------------------------------------------------- | --------------------------------------- |
-| **Backend**   | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http) | HTTP server with method-aware routing   |
-| **Database**  | [SQLite](https://www.sqlite.org/docs.html)                          | Embedded database (CGO-free)            |
-| **Frontend**  | [HTMX](https://htmx.org/docs/)                                      | Dynamic interactions without JavaScript |
-| **Templates** | [html/template](https://pkg.go.dev/html/template)                   | Type-safe HTML with XSS protection      |
-| **Styling**   | Vanilla CSS                                                         | Direct styling control                  |
-| **Build**     | [Mage](https://magefile.org/)                                       | Go-based build automation               |
+| Layer           | Technology                                                          | Purpose                                 |
+| --------------- | ------------------------------------------------------------------- | --------------------------------------- |
+| **Backend**     | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http) | HTTP server with method-aware routing   |
+| **Database**    | [SQLite](https://www.sqlite.org/docs.html)                          | Embedded database (CGO-free)            |
+| **Frontend**    | [HTMX](https://htmx.org/docs/)                                      | Dynamic interactions without JavaScript |
+| **Templates**   | [html/template](https://pkg.go.dev/html/template)                   | Type-safe HTML with XSS protection      |
+| **Styling**     | Vanilla CSS                                                         | Direct styling control                  |
+| **Build**       | [Mage](https://magefile.org/)                                       | Go-based build automation               |
+| **Live Reload** | [Air](https://github.com/air-verse/air)                             | Hot reloading for rapid development     |
 
 ## Quick Start
 
@@ -57,7 +59,13 @@ A monorepo showcasing **The Ultimate Go Standard Library Web Stack** - built for
 3. Start applications:
 
    ```bash
+   # Development with live reloading (recommended)
+   mage dev:startwithair
+
+   # Or traditional build-once mode
    mage dev:start
+
+   # Access applications:
    # API Playground: http://localhost:8080
    # GoSocial: http://localhost:8081
    ```
@@ -79,19 +87,65 @@ Social media platform with secure authentication, real-time feeds, SQLite databa
 ## Commands
 
 ```bash
-# Development
+# Development Setup
 mage dev:init        # Initialize environment
-mage dev:start       # Start all applications
-mage build:all       # Build all applications
-mage test:all        # Run all tests
+mage tools:install   # Install development tools (Air, golangci-lint, etc.)
 
-# Individual apps
+# Development with Live Reload (Recommended)
+mage dev:startwithair    # Start all applications with Air live reloading
+mage runapiwithair       # Run API playground with live reload
+mage runsocialwithair    # Run GoSocial with live reload
+
+# Traditional Development
+mage dev:start       # Start all applications (build once)
 mage runapi          # Run API playground only
 mage runsocial       # Run GoSocial only
+
+# Build & Test
+mage build:all       # Build all applications
+mage test:all        # Run all tests
+mage dev:lint        # Run code linting
+mage dev:fmt         # Format code
 
 # Production
 mage prod:release    # Create production release
 mage prod:caddy      # Start Caddy reverse proxy
+```
+
+## Development Workflow
+
+### Live Reloading with Air
+
+For the best development experience, use Air live reloading:
+
+```bash
+# Install development tools
+mage tools:install
+
+# Start both applications with live reload
+mage dev:startwithair
+```
+
+Air automatically watches for changes in:
+
+- Go source files (`.go`)
+- HTML templates (`.html`, `.tmpl`)
+- CSS stylesheets (`.css`)
+- JavaScript files (`.js`)
+
+When changes are detected, Air rebuilds and restarts the applications instantly.
+
+### Manual Development
+
+For traditional development without live reload:
+
+```bash
+# Build and start applications
+mage dev:start
+
+# Or run individual applications
+mage runapi     # API Playground only
+mage runsocial  # GoSocial only
 ```
 
 ## Package Architecture
@@ -146,7 +200,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 <p align="center">
   <strong>The Ultimate Go Standard Library Web Stack</strong><br>
-  <sub>Go + http.ServeMux + HTMX + html/template + SQLite + Vanilla CSS + Mage</sub>
+  <sub>Go + http.ServeMux + HTMX + html/template + SQLite + Vanilla CSS + Mage + Air</sub>
 </p>
 
 <p align="center">
