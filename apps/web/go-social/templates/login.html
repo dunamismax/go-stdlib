@@ -1,27 +1,23 @@
 {{define "content"}}
-<div class="container">
-    <div class="form-container">
-        <div class="card">
-            <h1>Login to GoSocial</h1>
-            
-            <form method="POST" action="/login">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                </div>
+<div class="form-container">
+    <article>
+        <h1>Login to GoSocial</h1>
+        
+        <form method="POST" action="/login">
+            <fieldset>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
                 
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </fieldset>
             
-            <p class="form-footer">
-                Don't have an account? <a href="/register">Register</a>
-            </p>
-        </div>
-    </div>
+            <button type="submit">Login</button>
+        </form>
+        
+        <footer class="form-footer">
+            <p>Don't have an account? <a href="/register">Register</a></p>
+        </footer>
+    </article>
 </div>
 {{end}}

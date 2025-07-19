@@ -152,7 +152,7 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	if currentUser == nil {
 		if isHTMXRequest(r) {
 			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprint(w, `<button class="like-btn">❤️ Must login</button>`)
+			fmt.Fprint(w, `<button class="like-btn">Must login</button>`)
 			return
 		}
 		utils.Error(w, http.StatusUnauthorized, "Must be logged in")
@@ -164,7 +164,7 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if isHTMXRequest(r) {
 			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprint(w, `<button class="like-btn">❤️ Error</button>`)
+			fmt.Fprint(w, `<button class="like-btn">Error</button>`)
 			return
 		}
 		utils.Error(w, http.StatusBadRequest, "Invalid post ID")
@@ -176,7 +176,7 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if isHTMXRequest(r) {
 			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprint(w, `<button class="like-btn">❤️ Not found</button>`)
+			fmt.Fprint(w, `<button class="like-btn">Not found</button>`)
 			return
 		}
 		utils.Error(w, http.StatusNotFound, "Post not found")
@@ -198,27 +198,23 @@ func (h *Handler) LikePostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if isHTMXRequest(r) {
 			w.Header().Set("Content-Type", "text/html")
-			fmt.Fprint(w, `<button class="like-btn">❤️ Error</button>`)
+			fmt.Fprint(w, `<button class="like-btn">Error</button>`)
 			return
 		}
 		utils.Error(w, http.StatusInternalServerError, "Failed to update like")
 		return
 	}
 
-	if isHTMXRequest(r) {
-		w.Header().Set("Content-Type", "text/html")
+	// Return JSON for both HTMX and TypeScript requests
+	w.Header().Set("Content-Type", "application/json")
 
-		likeClass := "like-btn"
-		if post.IsLiked {
-			likeClass = "like-btn liked"
-		}
-
-		fmt.Fprintf(w, `<button hx-post="/like/%d" hx-target="this" hx-swap="outerHTML" class="%s">❤️ %d</button>`,
-			postID, likeClass, post.LikeCount)
-		return
+	response := map[string]interface{}{
+		"success": true,
+		"liked":   post.IsLiked,
+		"likes":   post.LikeCount,
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	utils.Success(w, response)
 }
 
 func (h *Handler) GetPostsHandler(w http.ResponseWriter, r *http.Request) {

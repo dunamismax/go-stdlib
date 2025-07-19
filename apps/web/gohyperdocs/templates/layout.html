@@ -5,61 +5,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/main.css">
     <script src="/static/htmx.min.js"></script>
+    <script src="/static/main.js" type="module"></script>
 </head>
 <body hx-boost="true">
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <a href="/">GoHyperDocs</a>
+    <nav>
+        <div class="container">
+            <div class="brand">
+                <a href="/" style="text-decoration: none;">
+                    <strong>GoHyperDocs</strong>
+                </a>
             </div>
-            <div class="nav-menu">
-                <a href="/" class="nav-link">Home</a>
-                <a href="/category/getting-started" class="nav-link">Getting Started</a>
-                <a href="/category/htmx-features" class="nav-link">HTMX Features</a>
-                <a href="/category/go-backend" class="nav-link">Go Backend</a>
-                <a href="/category/deployment" class="nav-link">Deployment</a>
-            </div>
-            <div class="nav-search">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/category/getting-started">Getting Started</a></li>
+                <li><a href="/category/htmx-features">HTMX Features</a></li>
+                <li><a href="/category/go-backend">Go Backend</a></li>
+                <li><a href="/category/deployment">Deployment</a></li>
+            </ul>
+            <details>
+                <summary>Search</summary>
                 <input type="search" 
                        id="search-input"
                        hx-get="/api/search" 
                        hx-target="#search-results"
                        hx-trigger="input changed delay:300ms"
                        hx-vals="js:{q: document.getElementById('search-input').value}"
-                       placeholder="Search docs..."
-                       class="search-input">
-            </div>
+                       placeholder="Search docs...">
+            </details>
         </div>
     </nav>
 
-    <div class="container">
-        <div class="content-wrapper">
-            <aside class="sidebar">
+    <main class="container">
+        <div class="grid">
+            <aside>
                 {{if .Categories}}
                     {{range $category, $sections := .Categories}}
-                    <div class="sidebar-section">
-                        <h3 class="sidebar-title">
-                            <a href="/category/{{$category}}">{{$category | titleCase}}</a>
-                        </h3>
-                        <ul class="sidebar-list">
+                    <details>
+                        <summary><a href="/category/{{$category}}">{{$category | titleCase}}</a></summary>
+                        <ul>
                             {{range $sections}}
-                            <li><a href="/section/{{.Slug}}" class="sidebar-link">{{.Title}}</a></li>
+                            <li><a href="/section/{{.Slug}}">{{.Title}}</a></li>
                             {{end}}
                         </ul>
-                    </div>
+                    </details>
                     {{end}}
                 {{end}}
             </aside>
 
-            <main class="main-content" id="main-content">
+            <section id="main-content">
                 {{template "content" .}}
-            </main>
+            </section>
         </div>
 
-        <div id="search-results" class="search-results"></div>
-    </div>
+        <div id="search-results"></div>
+    </main>
 
     <script>
         // Copy to clipboard functionality

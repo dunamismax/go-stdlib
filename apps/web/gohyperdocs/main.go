@@ -14,11 +14,14 @@ import (
 	"github.com/dunamismax/go-stdlib/pkg/database"
 )
 
+//go:embed static/main.js
+var mainJS []byte
+
+//go:embed static/main.css
+var mainCSS []byte
+
 //go:embed static/htmx.min.js
 var htmxJS []byte
-
-//go:embed static/styles.css
-var stylesCSS []byte
 
 //go:embed templates/home.html
 var homeTemplate string
@@ -95,11 +98,14 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Static files
+	mux.HandleFunc("GET /static/main.js", func(w http.ResponseWriter, r *http.Request) {
+		docsHandler.ServeStatic(w, r, mainJS, "application/javascript")
+	})
+	mux.HandleFunc("GET /static/main.css", func(w http.ResponseWriter, r *http.Request) {
+		docsHandler.ServeStatic(w, r, mainCSS, "text/css")
+	})
 	mux.HandleFunc("GET /static/htmx.min.js", func(w http.ResponseWriter, r *http.Request) {
 		docsHandler.ServeStatic(w, r, htmxJS, "application/javascript")
-	})
-	mux.HandleFunc("GET /static/styles.css", func(w http.ResponseWriter, r *http.Request) {
-		docsHandler.ServeStatic(w, r, stylesCSS, "text/css")
 	})
 
 	// API endpoints for HTMX

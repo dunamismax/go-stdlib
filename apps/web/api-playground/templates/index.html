@@ -1,124 +1,259 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>API Playground</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <script src="/static/htmx.min.js"></script>
-</head>
-<body>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API Playground - Interactive Developer Tools</title>
+    <meta name="description" content="A comprehensive toolkit for developers with text analysis, manipulation, and interactive utilities built with Go + HTMX + TypeScript + Vite." />
+    <link rel="stylesheet" href="/static/main.css" />
+  </head>
+  <body>
     <div class="container">
+      <header class="header">
         <h1>API Playground</h1>
-        <p>A comprehensive toolkit for developers with text analysis, manipulation, and utility functions.</p>
+        <p class="subtitle">
+          A comprehensive toolkit for developers with text analysis, manipulation,
+          and interactive utilities.
+        </p>
+      </header>
 
-        <div class="grid">
-            <!-- Text Analysis -->
-            <div class="card">
-                <h2>Text Analysis</h2>
-                <form>
-                    <textarea name="text" placeholder="Enter text to analyze..." rows="4"></textarea>
-                    <button type="button" 
-                            hx-post="/analyze" 
-                            hx-target="#analyze-result" 
-                            hx-include="this">
-                        Analyze
-                    </button>
-                </form>
-                <div id="analyze-result" class="result"></div>
+      <div class="cards-grid">
+        <!-- Text Analysis -->
+        <div class="api-card">
+          <h2>Text Analysis</h2>
+          <form>
+            <textarea
+              name="text"
+              placeholder="Enter text to analyze..."
+              rows="4"
+            ></textarea>
+            <div class="button-group">
+              <button
+                type="button"
+                hx-post="/analyze"
+                hx-target="#analyze-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Analyze Text
+              </button>
             </div>
-
-            <!-- Text Manipulation -->
-            <div class="card">
-                <h2>Text Manipulation</h2>
-                <form>
-                    <input type="text" name="text" placeholder="Enter text to manipulate...">
-                    <div>
-                        <button type="button" 
-                                hx-post="/reverse" 
-                                hx-target="#manipulate-result" 
-                                hx-include="this">
-                            Reverse
-                        </button>
-                        <button type="button" 
-                                hx-post="/titlecase" 
-                                hx-target="#manipulate-result" 
-                                hx-include="this">
-                            Title Case
-                        </button>
-                        <button type="button" 
-                                hx-post="/count-vowels" 
-                                hx-target="#manipulate-result" 
-                                hx-include="this">
-                            Count Vowels
-                        </button>
-                    </div>
-                </form>
-                <div id="manipulate-result" class="result"></div>
-            </div>
-
-            <!-- Random Generators -->
-            <div class="card">
-                <h2>Random Generators</h2>
-                <form>
-                    <div>
-                        <label>Min:</label>
-                        <input type="number" name="min" value="1">
-                        <label>Max:</label>
-                        <input type="number" name="max" value="100">
-                    </div>
-                    <div>
-                        <button type="button" 
-                                hx-post="/random-number" 
-                                hx-target="#random-result" 
-                                hx-include="this">
-                            Random Number
-                        </button>
-                        <button type="button" 
-                                hx-post="/random-string" 
-                                hx-target="#random-result" 
-                                hx-include="this">
-                            Random String
-                        </button>
-                        <button type="button" 
-                                hx-post="/uuid" 
-                                hx-target="#random-result">
-                            UUID
-                        </button>
-                    </div>
-                </form>
-                <div id="random-result" class="result"></div>
-            </div>
-
-            <!-- Encoding/Hashing -->
-            <div class="card">
-                <h2>Encoding & Hashing</h2>
-                <form>
-                    <input type="text" name="text" placeholder="Enter text to encode/hash...">
-                    <div>
-                        <button type="button" 
-                                hx-post="/sha256" 
-                                hx-target="#encode-result" 
-                                hx-include="this">
-                            SHA256
-                        </button>
-                        <button type="button" 
-                                hx-post="/base64-encode" 
-                                hx-target="#encode-result" 
-                                hx-include="this">
-                            Base64 Encode
-                        </button>
-                        <button type="button" 
-                                hx-post="/base64-decode" 
-                                hx-target="#encode-result" 
-                                hx-include="this">
-                            Base64 Decode
-                        </button>
-                    </div>
-                </form>
-                <div id="encode-result" class="result"></div>
-            </div>
+          </form>
+          <div id="analyze-result" class="result-container"></div>
         </div>
+
+        <!-- Text Manipulation -->
+        <div class="api-card">
+          <h2>Text Manipulation</h2>
+          <form>
+            <input
+              type="text"
+              name="text"
+              placeholder="Enter text to manipulate..."
+            />
+            <div class="button-group">
+              <button
+                type="button"
+                hx-post="/reverse"
+                hx-target="#manipulate-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Reverse
+              </button>
+              <button
+                type="button"
+                class="btn-secondary"
+                hx-post="/titlecase"
+                hx-target="#manipulate-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Title Case
+              </button>
+              <button
+                type="button"
+                hx-post="/count-vowels"
+                hx-target="#manipulate-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Count Vowels
+              </button>
+            </div>
+          </form>
+          <div id="manipulate-result" class="result-container"></div>
+        </div>
+
+        <!-- Random Generators -->
+        <div class="api-card">
+          <h2>Random Generators</h2>
+          <form>
+            <div class="form-row">
+              <label>Min:</label>
+              <input type="number" name="min" value="1" />
+            </div>
+            <div class="form-row">
+              <label>Max:</label>
+              <input type="number" name="max" value="100" />
+            </div>
+            <div class="button-group">
+              <button
+                type="button"
+                hx-post="/random-number"
+                hx-target="#random-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Random Number
+              </button>
+              <button
+                type="button"
+                class="btn-secondary"
+                hx-post="/random-string"
+                hx-target="#random-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Random String
+              </button>
+              <button
+                type="button"
+                hx-post="/uuid"
+                hx-target="#random-result"
+                hx-indicator="closest .api-card"
+              >
+                Generate UUID
+              </button>
+            </div>
+          </form>
+          <div id="random-result" class="result-container"></div>
+        </div>
+
+        <!-- Encoding/Hashing -->
+        <div class="api-card">
+          <h2>Encoding & Hashing</h2>
+          <form>
+            <input
+              type="text"
+              name="text"
+              placeholder="Enter text to encode/hash..."
+            />
+            <div class="button-group">
+              <button
+                type="button"
+                class="btn-danger"
+                hx-post="/sha256"
+                hx-target="#encode-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                SHA256 Hash
+              </button>
+              <button
+                type="button"
+                hx-post="/base64-encode"
+                hx-target="#encode-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Base64 Encode
+              </button>
+              <button
+                type="button"
+                class="btn-secondary"
+                hx-post="/base64-decode"
+                hx-target="#encode-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Base64 Decode
+              </button>
+            </div>
+          </form>
+          <div id="encode-result" class="result-container"></div>
+        </div>
+
+        <!-- Fun APIs -->
+        <div class="api-card">
+          <h2>Fun APIs</h2>
+          <form>
+            <div class="button-group">
+              <button
+                type="button"
+                hx-get="/joke"
+                hx-target="#fun-result"
+                hx-indicator="closest .api-card"
+              >
+                Random Joke
+              </button>
+              <button
+                type="button"
+                class="btn-secondary"
+                hx-get="/quote"
+                hx-target="#fun-result"
+                hx-indicator="closest .api-card"
+              >
+                Inspirational Quote
+              </button>
+              <button
+                type="button"
+                hx-get="/fact"
+                hx-target="#fun-result"
+                hx-indicator="closest .api-card"
+              >
+                Random Fact
+              </button>
+            </div>
+          </form>
+          <div id="fun-result" class="result-container"></div>
+        </div>
+
+        <!-- Time & Date -->
+        <div class="api-card">
+          <h2>Time & Date</h2>
+          <form>
+            <input
+              type="text"
+              name="timezone"
+              placeholder="Enter timezone (e.g., America/New_York)"
+              value="UTC"
+            />
+            <div class="button-group">
+              <button
+                type="button"
+                hx-post="/current-time"
+                hx-target="#time-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Current Time
+              </button>
+              <button
+                type="button"
+                class="btn-secondary"
+                hx-post="/timestamp"
+                hx-target="#time-result"
+                hx-include="closest form"
+                hx-indicator="closest .api-card"
+              >
+                Unix Timestamp
+              </button>
+              <button
+                type="button"
+                hx-get="/date-formats"
+                hx-target="#time-result"
+                hx-indicator="closest .api-card"
+              >
+                Date Formats
+              </button>
+            </div>
+          </form>
+          <div id="time-result" class="result-container"></div>
+        </div>
+      </div>
     </div>
-</body>
+
+    <script type="module" src="/static/main.js"></script>
+  </body>
 </html>

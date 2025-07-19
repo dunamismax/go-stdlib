@@ -16,8 +16,8 @@ import (
 	"time"
 )
 
-//go:embed static/htmx.min.js
-var htmxJS []byte
+//go:embed dist/*
+var distFS embed.FS
 
 //go:embed templates/index.html
 var indexHTML string
@@ -34,73 +34,6 @@ func init() {
 	indexTemplate = template.Must(template.New("index").Parse(indexHTML))
 	resultTemplate = template.Must(template.New("result").Parse(resultHTML))
 }
-
-var stylesCSS = `
-body {
-	font-family: system-ui, -apple-system, sans-serif;
-	background-color: #0f0f0f;
-	color: #e4e4e4;
-	margin: 0;
-	padding: 1rem;
-	line-height: 1.6;
-}
-
-.container {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 2rem;
-}
-
-.card {
-	background: #1a1a1a;
-	border-radius: 8px;
-	padding: 1.5rem;
-	margin: 1rem 0;
-	border: 1px solid #333;
-}
-
-input, textarea, select {
-	background: #2a2a2a;
-	border: 1px solid #444;
-	color: #e4e4e4;
-	padding: 0.75rem;
-	border-radius: 4px;
-	font-size: 1rem;
-	width: 100%;
-	margin: 0.5rem 0;
-}
-
-button {
-	background: #2563eb;
-	color: white;
-	border: none;
-	padding: 0.75rem 1.5rem;
-	border-radius: 4px;
-	cursor: pointer;
-	font-size: 1rem;
-	margin: 0.5rem 0.5rem 0.5rem 0;
-}
-
-button:hover {
-	background: #1d4ed8;
-}
-
-.result {
-	background: #2a2a2a;
-	border-radius: 4px;
-	padding: 1rem;
-	margin: 1rem 0;
-	border: 1px solid #444;
-	word-wrap: break-word;
-}
-
-.grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-	gap: 1rem;
-	margin: 1rem 0;
-}
-`
 
 type App struct{}
 
@@ -307,14 +240,206 @@ func (a *App) base64Decode(w http.ResponseWriter, r *http.Request) {
 	resultTemplate.Execute(w, data)
 }
 
-func (a *App) serveHTMX(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/javascript")
-	w.Write(htmxJS)
+// Fun APIs
+var jokes = []string{
+	"Why don't scientists trust atoms? Because they make up everything!",
+	"Why did the programmer quit his job? He didn't get arrays!",
+	"How many programmers does it take to change a light bulb? None, that's a hardware problem!",
+	"Why do Java developers wear glasses? Because they can't C#!",
+	"What's the object-oriented way to become wealthy? Inheritance!",
+	"Why did the developer go broke? Because he used up all his cache!",
+	"What do you call a programmer from Finland? Nerdic!",
+	"Why do programmers prefer dark mode? Because light attracts bugs!",
+	"What's a programmer's favorite hangout place? Foo Bar!",
+	"Why don't programmers like nature? It has too many bugs!",
 }
 
-func (a *App) serveCSS(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/css")
-	w.Write([]byte(stylesCSS))
+var quotes = []string{
+	"The only way to do great work is to love what you do. - Steve Jobs",
+	"Code is like humor. When you have to explain it, it's bad. - Cory House",
+	"Programs must be written for people to read, and only incidentally for machines to execute. - Harold Abelson",
+	"The best error message is the one that never shows up. - Thomas Fuchs",
+	"Talk is cheap. Show me the code. - Linus Torvalds",
+	"Any fool can write code that a computer can understand. Good programmers write code that humans can understand. - Martin Fowler",
+	"First, solve the problem. Then, write the code. - John Johnson",
+	"Experience is the name everyone gives to their mistakes. - Oscar Wilde",
+	"The most important property of a program is whether it accomplishes the intention of its user. - C.A.R. Hoare",
+	"Simplicity is the ultimate sophistication. - Leonardo da Vinci",
+}
+
+var facts = []string{
+	"The first computer bug was an actual bug found in a Harvard Mark II computer in 1947.",
+	"The term 'debugging' was coined by Admiral Grace Hopper.",
+	"The first programming language was created in 1843 by Ada Lovelace.",
+	"COBOL was one of the first programming languages and is still used today in banking systems.",
+	"The @ symbol was used in email addresses because it was the only preposition available on the keyboard.",
+	"The first computer virus was created in 1971 and was called 'The Creeper'.",
+	"Java was originally called Oak, but had to be renamed due to trademark issues.",
+	"The term 'WiFi' doesn't actually stand for anything - it's just a brand name.",
+	"The first 1GB hard drive cost $40,000 and weighed over 500 pounds.",
+	"Python was named after Monty Python's Flying Circus, not the snake.",
+}
+
+func (a *App) randomJoke(w http.ResponseWriter, r *http.Request) {
+	// Generate random index
+	b := make([]byte, 1)
+	rand.Read(b)
+	index := int(b[0]) % len(jokes)
+
+	data := map[string]interface{}{
+		"Title":  "Random Joke:",
+		"Result": jokes[index],
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	resultTemplate.Execute(w, data)
+}
+
+func (a *App) randomQuote(w http.ResponseWriter, r *http.Request) {
+	// Generate random index
+	b := make([]byte, 1)
+	rand.Read(b)
+	index := int(b[0]) % len(quotes)
+
+	data := map[string]interface{}{
+		"Title":  "Inspirational Quote:",
+		"Result": quotes[index],
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	resultTemplate.Execute(w, data)
+}
+
+func (a *App) randomFact(w http.ResponseWriter, r *http.Request) {
+	// Generate random index
+	b := make([]byte, 1)
+	rand.Read(b)
+	index := int(b[0]) % len(facts)
+
+	data := map[string]interface{}{
+		"Title":  "Random Tech Fact:",
+		"Result": facts[index],
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	resultTemplate.Execute(w, data)
+}
+
+// Time and Date APIs
+func (a *App) currentTime(w http.ResponseWriter, r *http.Request) {
+	timezone := r.FormValue("timezone")
+	if timezone == "" {
+		timezone = "UTC"
+	}
+
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		data := map[string]interface{}{
+			"Title":  "Error:",
+			"Result": "Invalid timezone: " + timezone,
+		}
+		w.Header().Set("Content-Type", "text/html")
+		resultTemplate.Execute(w, data)
+		return
+	}
+
+	now := time.Now().In(loc)
+	formatted := now.Format("Monday, January 2, 2006 at 3:04:05 PM MST")
+
+	data := map[string]interface{}{
+		"Title":  "Current Time (" + timezone + "):",
+		"Result": formatted,
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	resultTemplate.Execute(w, data)
+}
+
+func (a *App) unixTimestamp(w http.ResponseWriter, r *http.Request) {
+	timezone := r.FormValue("timezone")
+	if timezone == "" {
+		timezone = "UTC"
+	}
+
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		data := map[string]interface{}{
+			"Title":  "Error:",
+			"Result": "Invalid timezone: " + timezone,
+		}
+		w.Header().Set("Content-Type", "text/html")
+		resultTemplate.Execute(w, data)
+		return
+	}
+
+	now := time.Now().In(loc)
+	timestamp := now.Unix()
+
+	data := map[string]interface{}{
+		"Title":  "Unix Timestamp:",
+		"Result": fmt.Sprintf("%d", timestamp),
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	resultTemplate.Execute(w, data)
+}
+
+func (a *App) dateFormats(w http.ResponseWriter, r *http.Request) {
+	now := time.Now().UTC()
+
+	formats := []string{
+		"ISO 8601: " + now.Format("2006-01-02T15:04:05Z"),
+		"RFC 3339: " + now.Format(time.RFC3339),
+		"US Format: " + now.Format("01/02/2006 03:04 PM"),
+		"EU Format: " + now.Format("02/01/2006 15:04"),
+		"Long Format: " + now.Format("Monday, January 2, 2006"),
+		"Short Date: " + now.Format("Jan 2, 2006"),
+		"Time Only: " + now.Format("15:04:05"),
+		"12H Time: " + now.Format("3:04:05 PM"),
+	}
+
+	result := ""
+	for _, format := range formats {
+		result += format + "\n"
+	}
+
+	data := map[string]interface{}{
+		"Title":  "Date & Time Formats (UTC):",
+		"Result": result,
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	resultTemplate.Execute(w, data)
+}
+
+func (a *App) serveStatic(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	if path == "/static/" {
+		path = "/static/index.html"
+	}
+
+	// Remove /static/ prefix and add dist/ prefix
+	filePath := "dist" + strings.TrimPrefix(path, "/static")
+
+	// Read file from embedded filesystem
+	data, err := distFS.ReadFile(filePath)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	// Set content type based on file extension
+	if strings.HasSuffix(filePath, ".css") {
+		w.Header().Set("Content-Type", "text/css")
+	} else if strings.HasSuffix(filePath, ".js") {
+		w.Header().Set("Content-Type", "application/javascript")
+	} else if strings.HasSuffix(filePath, ".html") {
+		w.Header().Set("Content-Type", "text/html")
+	}
+
+	// Set cache headers for static assets
+	w.Header().Set("Cache-Control", "public, max-age=31536000")
+	w.Write(data)
 }
 
 func loggerMiddleware(next http.Handler) http.Handler {
@@ -342,9 +467,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	// Static files
-	mux.HandleFunc("GET /static/htmx.min.js", app.serveHTMX)
-	mux.HandleFunc("GET /static/styles.css", app.serveCSS)
+	// Static files (Vite build output)
+	mux.HandleFunc("GET /static/", app.serveStatic)
 
 	// Routes
 	mux.HandleFunc("GET /", app.homePage)
@@ -358,6 +482,16 @@ func main() {
 	mux.HandleFunc("POST /sha256", app.sha256Hash)
 	mux.HandleFunc("POST /base64-encode", app.base64Encode)
 	mux.HandleFunc("POST /base64-decode", app.base64Decode)
+
+	// Fun APIs
+	mux.HandleFunc("GET /joke", app.randomJoke)
+	mux.HandleFunc("GET /quote", app.randomQuote)
+	mux.HandleFunc("GET /fact", app.randomFact)
+
+	// Time and Date APIs
+	mux.HandleFunc("POST /current-time", app.currentTime)
+	mux.HandleFunc("POST /timestamp", app.unixTimestamp)
+	mux.HandleFunc("GET /date-formats", app.dateFormats)
 
 	handler := loggerMiddleware(mux)
 

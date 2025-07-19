@@ -1,0 +1,323 @@
+/* GoHyperDocs Custom Styles */
+/* Built on top of Pico.css for the Go Hypermedia Stack */
+
+/* Custom properties for theme consistency */
+:root {
+  --gohd-primary: #56b6c2;
+  --gohd-secondary: #61afef;
+  --gohd-accent: #98c379;
+  --gohd-warning: #e5c07b;
+  --gohd-danger: #e06c75;
+  
+  /* Override Pico's dark theme variables */
+  --pico-primary: var(--gohd-primary);
+  --pico-primary-background: var(--gohd-primary);
+  --pico-secondary: var(--gohd-secondary);
+  --pico-color: #abb2bf;
+  --pico-background-color: #282c34;
+  --pico-card-background-color: #1e2329;
+  --pico-card-border-color: #3e4451;
+  --pico-border-color: #3e4451;
+}
+
+/* Custom utility classes */
+.text-primary {
+  color: var(--gohd-primary) !important;
+}
+
+.text-secondary {
+  color: var(--gohd-secondary) !important;
+}
+
+.text-accent {
+  color: var(--gohd-accent) !important;
+}
+
+.bg-card {
+  background-color: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+}
+
+/* Enhanced code blocks */
+pre, code {
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+}
+
+code {
+  background: rgba(86, 182, 194, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* Interactive demo styles */
+.demo-section {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.demo-section h3 {
+  color: var(--gohd-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Live stats styling */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gohd-primary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: var(--pico-muted-color);
+  font-size: 0.9rem;
+}
+
+/* Form validation */
+.validation-message {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.validation-message.success {
+  color: var(--gohd-accent);
+}
+
+.validation-message.error {
+  color: var(--gohd-danger);
+}
+
+/* Todo demo */
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+}
+
+.todo-delete {
+  background: var(--gohd-danger);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Tab navigation */
+.tab-navigation {
+  display: flex;
+  background: var(--pico-card-background-color);
+  border-radius: var(--pico-border-radius);
+  padding: 0.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--pico-card-border-color);
+}
+
+.tab-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--pico-muted-color);
+  cursor: pointer;
+  border-radius: calc(var(--pico-border-radius) - 0.25rem);
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background: var(--gohd-primary);
+  color: white;
+}
+
+.tab-button:hover:not(.active) {
+  background: var(--pico-background-color);
+  color: var(--pico-color);
+}
+
+/* Hero section customization */
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, rgba(86, 182, 194, 0.1) 0%, rgba(97, 175, 239, 0.1) 100%);
+  border-radius: var(--pico-border-radius);
+  margin-bottom: 3rem;
+  border: 1px solid var(--pico-card-border-color);
+}
+
+.hero h1 {
+  font-size: 3rem;
+  background: linear-gradient(135deg, var(--gohd-primary), var(--gohd-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--pico-muted-color);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+/* Feature grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 2rem;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gohd-primary);
+}
+
+.feature-card h3 {
+  color: var(--gohd-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Tech stack grid */
+.tech-stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.tech-item {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.tech-item:hover {
+  transform: translateY(-2px);
+}
+
+.tech-item h3 {
+  color: var(--gohd-primary);
+  margin-bottom: 1rem;
+}
+
+/* Navigation enhancements */
+nav {
+  background: var(--pico-card-background-color);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--pico-card-border-color);
+}
+
+nav a {
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: var(--gohd-primary);
+}
+
+/* HTMX loading indicators */
+.htmx-indicator {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.htmx-request .htmx-indicator {
+  opacity: 1;
+}
+
+/* Loading spinner */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(86, 182, 194, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--gohd-primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .feature-grid,
+  .tech-stack {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Enhanced focus styles for accessibility */
+*:focus {
+  outline: 2px solid var(--gohd-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection colors */
+::selection {
+  background: var(--gohd-primary);
+  color: white;
+}
+
+::-moz-selection {
+  background: var(--gohd-primary);
+  color: white;
+}

@@ -1,0 +1,256 @@
+/* Custom styles for GoSocial - building on Pico.css */
+
+:root {
+  --pico-background-color: #0f0f0f;
+  --pico-color: #e4e4e4;
+  --pico-card-background-color: #1a1a1a;
+  --pico-card-border-color: #333;
+  --pico-primary: #2563eb;
+  --pico-primary-hover: #1d4ed8;
+}
+
+body {
+  background-color: var(--pico-background-color);
+  color: var(--pico-color);
+}
+
+/* Navigation styles */
+.nav-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--pico-primary);
+  text-decoration: none;
+}
+
+.nav-brand:hover {
+  color: var(--pico-primary-hover);
+  text-decoration: none;
+}
+
+/* Feed container */
+.feed-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Post composition */
+.post-form {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.post-form textarea {
+  min-height: 120px;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.char-count {
+  font-size: 0.875rem;
+  color: var(--pico-color-grey-500);
+}
+
+/* Post cards */
+.post-card {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.post-author h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+}
+
+.post-time {
+  font-size: 0.875rem;
+  color: var(--pico-color-grey-500);
+}
+
+.post-content {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.post-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  color: var(--pico-color-grey-500);
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.like-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.like-btn.liked {
+  color: #ef4444;
+}
+
+.like-count {
+  color: var(--pico-color-grey-500);
+  font-size: 0.875rem;
+}
+
+/* Welcome section */
+.welcome-card {
+  text-align: center;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.welcome-card h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--pico-primary);
+}
+
+.welcome-card p {
+  font-size: 1.1rem;
+  color: var(--pico-color-grey-500);
+  margin-bottom: 1.5rem;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  color: var(--pico-color-grey-500);
+  padding: 3rem;
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+}
+
+.empty-state h3 {
+  margin-bottom: 1rem;
+  color: var(--pico-color);
+}
+
+/* Form containers */
+.form-container {
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.form-container .card {
+  background: var(--pico-card-background-color);
+  border: 1px solid var(--pico-card-border-color);
+  border-radius: var(--pico-border-radius);
+  padding: 2rem;
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--pico-primary);
+}
+
+.form-container .form-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.form-container .form-footer p {
+  margin-top: 1rem;
+  color: var(--pico-color-grey-500);
+}
+
+.form-container .form-footer a {
+  color: var(--pico-primary);
+  text-decoration: none;
+}
+
+.form-container .form-footer a:hover {
+  color: var(--pico-primary-hover);
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .welcome-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .post-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+}
+
+/* Message notifications */
+.message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 1rem;
+  border-radius: var(--pico-border-radius);
+  color: white;
+  z-index: 1000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease;
+}
+
+.message-success {
+  background: var(--pico-color-green-500);
+}
+
+.message-error {
+  background: var(--pico-color-red-500);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

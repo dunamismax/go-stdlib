@@ -14,11 +14,11 @@ import (
 	"github.com/dunamismax/go-stdlib/pkg/database"
 )
 
+//go:embed dist
+var distFS embed.FS
+
 //go:embed static/htmx.min.js
 var htmxJS []byte
-
-//go:embed static/styles.css
-var stylesCSS []byte
 
 //go:embed templates/layout.html
 var layoutTemplate string
@@ -68,14 +68,15 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	// Static files
+	// Static files - serve both old and new assets
 	mux.HandleFunc("GET /static/htmx.min.js", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/javascript")
 		w.Write(htmxJS)
 	})
-	mux.HandleFunc("GET /static/styles.css", func(w http.ResponseWriter, r *http.Request) {
-		handler.ServeCSS(w, r, stylesCSS)
-	})
+
+	// Serve built assets from Vite
+	assetsHandler := http.FileServer(http.FS(distFS))
+	mux.Handle("GET /assets/", http.StripPrefix("/", assetsHandler))
 
 	// Authentication routes
 	mux.HandleFunc("GET /login", handler.LoginPageHandler)

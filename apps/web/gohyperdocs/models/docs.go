@@ -219,11 +219,11 @@ func (s *DocsService) SeedData() error {
 		{
 			Title:   "Performance & Benchmarks",
 			Slug:    "performance-benchmarks",
-			Content: "This stack delivers exceptional performance: sub-millisecond response times, minimal memory usage, and the ability to handle thousands of concurrent connections on modest hardware. Compiled Go code is inherently fast, and SQLite provides zero-latency data access without network overhead.",
+			Content: "This stack delivers exceptional performance: sub-millisecond response times, minimal memory usage, and the ability to handle 50K+ concurrent connections on modest hardware. Compiled Go code is inherently fast, and SQLite provides zero-latency data access without network overhead.",
 			CodeExample: `// Benchmark results on a modest VPS:
 // Response time: 0.2ms average
 // Memory usage: 15MB total
-// Concurrent users: 10,000+
+// Concurrent users: 50,000+
 // Database queries: 50,000+ QPS
 // Binary size: 12MB (includes all assets)
 
@@ -454,7 +454,7 @@ func main() {
             hx-target="this"
             hx-swap="outerHTML"
             onclick="copyToClipboard(this)">
-      📋 Copy
+      Copy
     </button>
   </div>
   <pre><code>package main
@@ -918,7 +918,7 @@ func setupStaticRoutes(mux *http.ServeMux) {
 		{
 			Title:   "Single Binary Deployment",
 			Slug:    "single-binary-deployment",
-			Content: "Deploy your entire application as a single executable binary. No runtime dependencies, no installation scripts, no complex deployment pipelines. Just copy and run.",
+			Content: "Deploy your entire application as a single executable binary. Perfect for Ubuntu servers behind Caddy reverse proxy. No runtime dependencies, no installation scripts, no complex deployment pipelines. Just copy and run.",
 			CodeExample: `# Build for production
 go build -ldflags="-s -w" -o myapp main.go
 
@@ -940,6 +940,19 @@ COPY myapp /
 COPY data/ /data/
 EXPOSE 8080
 ENTRYPOINT ["/myapp"]
+
+# Ubuntu + Caddy deployment example
+# 1. Upload binary to Ubuntu server
+scp myapp-linux-amd64 user@server:/opt/myapp/myapp
+
+# 2. Create systemd service
+sudo systemctl enable myapp
+sudo systemctl start myapp
+
+# 3. Caddy reverse proxy (Caddyfile)
+myapp.example.com {
+    reverse_proxy localhost:8080
+}
 
 # Dockerfile is only 2 lines + your binary!
 # Final image size: ~15MB (including your app)`,

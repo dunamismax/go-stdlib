@@ -37,17 +37,17 @@ A comprehensive monorepo showcasing **The Ultimate Go Standard Library Web Stack
 
 ## Tech Stack
 
-| Layer           | Technology                                                          | Purpose                                 |
-| --------------- | ------------------------------------------------------------------- | --------------------------------------- |
-| **Backend**     | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http) | HTTP server with method-aware routing   |
-| **Database**    | [SQLite](https://www.sqlite.org/docs.html)                          | Embedded database (CGO-free)            |
-| **Frontend**    | [HTMX](https://htmx.org/docs/)                                      | Dynamic interactions without JavaScript |
-| **Templates**   | [html/template](https://pkg.go.dev/html/template)                   | Type-safe HTML with XSS protection      |
-| **Styling**     | Vanilla CSS                                                         | Direct styling control                  |
-| **Build**       | [Mage](https://magefile.org/)                                       | Go-based build automation               |
-| **Live Reload** | [Air](https://github.com/air-verse/air)                             | Hot reloading for rapid development     |
+| Layer           | Technology                                                                     | Purpose                                  |
+| --------------- | ------------------------------------------------------------------------------ | ---------------------------------------- |
+| **Backend**     | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http)            | HTTP server with method-aware routing    |
+| **Database**    | [SQLite](https://www.sqlite.org/docs.html)                                     | Embedded database (CGO-free)             |
+| **Frontend**    | [HTMX](https://htmx.org/docs/) & [TypeScript](https://www.typescriptlang.org/) | Dynamic interactions with type safety    |
+| **Templates**   | [html/template](https://pkg.go.dev/html/template)                              | Type-safe HTML with XSS protection       |
+| **Styling**     | [Pico.css](https://picocss.com/) + Custom CSS                                  | Modern, semantic CSS framework           |
+| **Build Tools** | [Vite](https://vitejs.dev/) + [Mage](https://magefile.org/)                    | Modern frontend builds + Go automation   |
+| **Live Reload** | [Air](https://github.com/air-verse/air) + Vite HMR                             | Hot reloading for full-stack development |
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Experience GoHyperDocs Immediately
 
@@ -67,7 +67,7 @@ mage dev:startwithair
 open http://localhost:8082
 ```
 
-**🎯 Start with GoHyperDocs** - It's the comprehensive demonstration of everything this stack can do!
+**Start with GoHyperDocs** - It's the comprehensive demonstration of everything this stack can do!
 
 ### All Applications
 
@@ -80,23 +80,26 @@ open http://localhost:8082
 
 ## Applications
 
-### 🎯 GoHyperDocs (Port 8082) - **FEATURED**
+### GoHyperDocs (Port 8082) - **FEATURED**
 
-**The ultimate demonstration of the Go hypermedia stack.** A comprehensive documentation platform showcasing every aspect of building modern web applications with Go's standard library and HTMX.
+**The ultimate demonstration of the modern Go hypermedia stack.** A comprehensive documentation platform showcasing the complete integration of Go's standard library, HTMX, TypeScript, Vite, and Pico.css for building high-performance web applications.
 
 **Key Features:**
 
+- **Modern frontend stack** - TypeScript + Vite + Pico.css with Hot Module Replacement
+- **Type-safe development** - Full TypeScript integration for complex client-side interactions
 - **25+ interactive documentation sections** covering the entire stack
 - **6 live HTMX demonstrations** - real-time stats, form validation, todo lists, tab navigation
-- **Performance showcases** - sub-millisecond response times, 12MB binary size
-- **Beautiful One Dark Pro theme** with sophisticated animations
-- **Progressive enhancement** - works without JavaScript, enhanced with HTMX
+- **Performance showcases** - sub-millisecond response times, optimized asset bundles
+- **Beautiful Pico.css design** with semantic HTML and modern aesthetics
+- **Progressive enhancement** - works without JavaScript, enhanced with HTMX and TypeScript
 - **Comprehensive code examples** with real-world implementations
 
 **Tech Categories Covered:**
 
 - Getting Started & Quick Setup
 - HTMX Features & Patterns
+- TypeScript & Vite Integration
 - Go Backend Architecture
 - Deployment & Production
 - Performance Optimization
@@ -104,11 +107,11 @@ open http://localhost:8082
 
 ### API Playground (Port 8080)
 
-Interactive API testing platform with text analysis, random generators, hash/encoding tools, and time utilities.
+Interactive API testing platform with text analysis, random generators, hash/encoding tools, and time utilities. **Now powered by Vite + TypeScript + Pico.css** for a modern development experience with hot module replacement and type safety.
 
 ### GoSocial (Port 8081)
 
-Social media platform with secure authentication, real-time feeds, SQLite database, and responsive design.
+Social media platform with secure authentication, real-time feeds, SQLite database, and responsive design. **Now powered by Vite + TypeScript + Pico.css** for a modern development experience with hot module replacement and type safety.
 
 <p align="center">
   <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-mage.svg" alt="Gopher Mage" width="150" />
@@ -132,6 +135,11 @@ mage dev:start       # Start all applications (build once)
 mage rundocs         # Run GoHyperDocs only
 mage runapi          # Run API playground only
 mage runsocial       # Run GoSocial only
+
+# Frontend Development
+mage runapifrontenddev    # Run API Playground Vite dev server with HMR
+mage runsocialfrontenddev # Run GoSocial Vite dev server with HMR
+mage rundocsfrontenddev   # Run GoHyperDocs Vite dev server with HMR
 
 # Build & Test
 mage build:all       # Build all applications
@@ -181,11 +189,63 @@ mage runapi     # API Playground only
 mage runsocial  # GoSocial only
 ```
 
+### Frontend Development
+
+All three applications now use **Vite + TypeScript + Pico.css** for modern frontend development:
+
+## API Playground Frontend Development
+
+```bash
+# For full-stack development with both backend and frontend live reload:
+# Terminal 1: Start Go backend with Air
+mage runapiwithair
+
+# Terminal 2: Start Vite dev server with HMR
+mage runapifrontenddev
+```
+
+The Vite dev server (<http://localhost:3000>) proxies API calls to the Go backend (<http://localhost:8080>).
+
+## GoSocial Frontend Development
+
+```bash
+# For full-stack development with both backend and frontend live reload:
+# Terminal 1: Start Go backend with Air
+mage runsocialwithair
+
+# Terminal 2: Start Vite dev server with HMR
+mage runsocialfrontenddev
+```
+
+The Vite dev server (<http://localhost:3001>) proxies API calls to the Go backend (<http://localhost:8081>).
+
+## GoHyperDocs Frontend Development
+
+```bash
+# For full-stack development with both backend and frontend live reload:
+# Terminal 1: Start Go backend with Air
+mage rundocswithair
+
+# Terminal 2: Start Vite dev server with HMR
+mage rundocsfrontenddev
+```
+
+The Vite dev server (<http://localhost:3002>) proxies API calls to the Go backend (<http://localhost:8082>).
+
+## Frontend Features
+
+All three applications provide:
+
+- **Hot Module Replacement (HMR)** for instant CSS/TypeScript updates
+- **Type-safe development** with TypeScript
+- **Modern CSS** with Pico.css framework
+- **Optimized builds** with automatic code splitting and minification
+
 ## Package Architecture
 
 ### Applications (`apps/web/`)
 
-- **gohyperdocs** - Comprehensive documentation platform with interactive HTMX demos
+- **gohyperdocs** - Comprehensive documentation platform showcasing the complete modern Go hypermedia stack with TypeScript + Vite + Pico.css
 - **api-playground** - Interactive API testing with utilities and generators
 - **go-social** - Social media platform with authentication and real-time features
 
@@ -234,7 +294,7 @@ mage prod:release
 
 ## Why This Stack?
 
-### 🚀 **Performance Advantages**
+### **Performance Advantages**
 
 - **Compiled Binary**: No interpretation overhead, maximum execution speed
 - **Embedded Assets**: Zero file system calls, instant asset serving
@@ -242,7 +302,7 @@ mage prod:release
 - **Goroutine Concurrency**: Handle thousands of concurrent users efficiently
 - **Minimal Allocations**: Careful memory management for sustained performance
 
-### 🔒 **Security First**
+### **Security First**
 
 - **Automatic XSS Protection**: html/template prevents injection attacks
 - **Parameterized Queries**: SQL injection protection by design
@@ -250,7 +310,7 @@ mage prod:release
 - **Input Validation**: Server-side validation with type safety
 - **No External Dependencies**: Reduced attack surface area
 
-### 🛠️ **Developer Experience**
+### **Developer Experience**
 
 - **Live Reloading**: Instant feedback with Air during development
 - **Type Safety**: Compile-time guarantees prevent runtime errors
@@ -287,18 +347,18 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ---
 
 <p align="center">
-  <strong>🎯 Ready to abandon the complexity?</strong><br>
+  <strong>Ready to abandon the complexity?</strong><br>
   <sub>This entire platform runs on 12MB binaries with zero dependencies</sub>
 </p>
 
 <p align="center">
-  <strong>The Ultimate Go Standard Library Web Stack</strong><br>
-  <sub>Go + http.ServeMux + HTMX + html/template + SQLite + Vanilla CSS + Mage + Air</sub>
+  <strong>The Ultimate Go Hypermedia Stack</strong><br>
+  <sub>Go + http.ServeMux + HTMX + TypeScript + Vite + Pico.css + html/template + SQLite + Mage + Air</sub>
 </p>
 
 <p align="center">
   <em>Stop fighting frameworks. Start building with fundamentals.</em><br>
-  <strong>⚡ 0.2ms response times | 📦 Single binary deployment | 🔒 Secure by default</strong>
+  <strong>0.2ms response times | Single binary deployment | Secure by default</strong>
 </p>
 
 <p align="center">

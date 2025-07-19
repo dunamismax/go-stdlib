@@ -1,0 +1,264 @@
+/* Custom styles to enhance Pico.css for API Playground */
+
+:root {
+  /* Custom color scheme for API Playground */
+  --primary: #0066cc;
+  --primary-hover: #0052a3;
+  --primary-focus: rgba(0, 102, 204, 0.125);
+  --primary-inverse: #fff;
+
+  /* Dark theme enhancements */
+  --background-color: #11191f;
+  --color: #c2c7d0;
+  --h1-color: #f1f3f4;
+  --h2-color: #e1e5e9;
+  --h3-color: #d1d5d9;
+  --muted-color: #81868d;
+  --muted-border-color: #2d3748;
+  --card-background-color: #1a202c;
+  --card-border-color: #2d3748;
+  --card-sectionning-background-color: #2d3748;
+}
+
+/* Force dark theme */
+html {
+  color-scheme: dark;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #11191f 0%, #1a202c 100%);
+  min-height: 100vh;
+}
+
+/* Header styling */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+.header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary) 0%, #00a8ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--muted-color);
+  font-weight: 400;
+}
+
+/* Card enhancements */
+.api-card {
+  background: var(--card-background-color);
+  border: 1px solid var(--card-border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.api-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
+  transform: translateY(-2px);
+}
+
+.api-card h2 {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* Grid layout for cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+/* Form enhancements */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+
+.form-row > * {
+  flex: 1;
+}
+
+.form-row label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--h3-color);
+}
+
+/* Button enhancements */
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+button[type="submit"] {
+  background: var(--primary);
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--secondary-inverse);
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-warning {
+  background: #ffc107;
+  color: #212529;
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+/* Result display */
+.result-container {
+  background: var(--card-sectionning-background-color);
+  border: 1px solid var(--muted-border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  position: relative;
+}
+
+.result-container h4 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.result-container pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Copy button */
+.copy-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  background: var(--muted-color);
+  color: var(--background-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+/* Loading state */
+[aria-busy="true"] {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+
+[aria-busy="true"]::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--primary);
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .header h1 {
+    font-size: 2.5rem;
+  }
+  
+  .api-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

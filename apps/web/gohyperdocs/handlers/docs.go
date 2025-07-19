@@ -13,6 +13,11 @@ import (
 	"github.com/dunamismax/go-stdlib/pkg/utils"
 )
 
+// Demo state for counters
+var (
+	visitorCount int64
+)
+
 type DocsHandler struct {
 	docsService *models.DocsService
 	templates   *template.Template
@@ -194,7 +199,7 @@ func (h *DocsHandler) CopyHandler(w http.ResponseWriter, r *http.Request) {
 	// This endpoint is called when copy is successful
 	// Return updated button state
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprint(w, `<button class="copy-btn copied" disabled>✅ Copied!</button>`)
+	fmt.Fprint(w, `<button class="copy-btn copied" disabled>Copied!</button>`)
 }
 
 // Interactive demonstration handlers
@@ -243,9 +248,9 @@ func (h *DocsHandler) FormValidationHandler(w http.ResponseWriter, r *http.Reque
 
 	w.Header().Set("Content-Type", "text/html")
 	if matched {
-		fmt.Fprint(w, `<div class="validation-message success">✅ Valid email address</div>`)
+		fmt.Fprint(w, `<div class="validation-message success">Valid email address</div>`)
 	} else {
-		fmt.Fprint(w, `<div class="validation-message error">❌ Please enter a valid email address</div>`)
+		fmt.Fprint(w, `<div class="validation-message error">Please enter a valid email address</div>`)
 	}
 }
 
@@ -254,12 +259,12 @@ func (h *DocsHandler) LoadMoreContentHandler(w http.ResponseWriter, r *http.Requ
 	time.Sleep(500 * time.Millisecond) // Simulate network delay
 
 	items := []string{
-		"🚀 Blazing fast server-side rendering",
-		"⚡ Zero-dependency JavaScript interactivity",
-		"🔒 Built-in XSS protection with html/template",
-		"💾 SQLite for zero-latency data access",
-		"📦 Single binary deployment",
-		"🎯 Progressive enhancement by design",
+		"Blazing fast server-side rendering",
+		"Zero-dependency JavaScript interactivity",
+		"Built-in XSS protection with html/template",
+		"SQLite for zero-latency data access",
+		"Single binary deployment",
+		"Progressive enhancement by design",
 	}
 
 	w.Header().Set("Content-Type", "text/html")
@@ -268,49 +273,6 @@ func (h *DocsHandler) LoadMoreContentHandler(w http.ResponseWriter, r *http.Requ
 		fmt.Fprintf(w, `<div class="feature-item" style="animation-delay: %dms">%s</div>`, i*100, item)
 	}
 	fmt.Fprint(w, `</div>`)
-}
-
-func (h *DocsHandler) TodoDemoHandler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "GET":
-		// Return the todo form
-		w.Header().Set("Content-Type", "text/html")
-		fmt.Fprint(w, `
-		<div class="todo-demo">
-			<form hx-post="/api/demo/todo" hx-target="#todo-list" hx-swap="beforeend">
-				<input name="task" type="text" placeholder="Add a new task..." required>
-				<button type="submit">Add Task</button>
-			</form>
-			<div id="todo-list" class="todo-list">
-				<div class="todo-item">
-					<span class="todo-text">Example: Learn HTMX</span>
-					<button class="todo-delete" hx-delete="/api/demo/todo/1" hx-target="closest .todo-item" hx-swap="outerHTML">×</button>
-				</div>
-			</div>
-		</div>`)
-
-	case "POST":
-		task := r.FormValue("task")
-		if task == "" {
-			utils.Error(w, http.StatusBadRequest, "Task is required")
-			return
-		}
-
-		// Generate a random ID for this demo
-		id := time.Now().UnixNano()
-
-		w.Header().Set("Content-Type", "text/html")
-		fmt.Fprintf(w, `
-		<div class="todo-item" style="animation: slideIn 0.3s ease-out">
-			<span class="todo-text">%s</span>
-			<button class="todo-delete" hx-delete="/api/demo/todo/%d" hx-target="closest .todo-item" hx-swap="outerHTML">×</button>
-		</div>`, template.HTMLEscapeString(task), id)
-
-	case "DELETE":
-		// Just return empty content to remove the item
-		w.Header().Set("Content-Type", "text/html")
-		w.Write([]byte(""))
-	}
 }
 
 func (h *DocsHandler) TabDemoHandler(w http.ResponseWriter, r *http.Request) {
@@ -322,36 +284,36 @@ func (h *DocsHandler) TabDemoHandler(w http.ResponseWriter, r *http.Request) {
 	content := map[string]string{
 		"overview": `
 		<div class="tab-content">
-			<h3>🎯 Go Hypermedia Stack Overview</h3>
+			<h3>Go Hypermedia Stack Overview</h3>
 			<p>A revolutionary approach to web development that combines the power of Go's standard library with the elegance of hypermedia-driven interfaces.</p>
 			<ul>
-				<li>✅ Zero external dependencies</li>
-				<li>✅ Single binary deployment</li>
-				<li>✅ Progressive enhancement</li>
-				<li>✅ Maximum performance</li>
+				<li>Zero external dependencies</li>
+				<li>Single binary deployment</li>
+				<li>Progressive enhancement</li>
+				<li>Maximum performance</li>
 			</ul>
 		</div>`,
 		"features": `
 		<div class="tab-content">
-			<h3>🚀 Key Features</h3>
+			<h3>Key Features</h3>
 			<div class="feature-grid">
 				<div class="feature-box">
-					<h4>⚡ Lightning Fast</h4>
+					<h4>Lightning Fast</h4>
 					<p>Sub-millisecond response times with compiled Go code</p>
 				</div>
 				<div class="feature-box">
-					<h4>🔒 Secure by Default</h4>
+					<h4>Secure by Default</h4>
 					<p>Built-in XSS protection and secure templating</p>
 				</div>
 				<div class="feature-box">
-					<h4>📦 Self-Contained</h4>
+					<h4>Self-Contained</h4>
 					<p>Everything embedded in a single binary</p>
 				</div>
 			</div>
 		</div>`,
 		"performance": `
 		<div class="tab-content">
-			<h3>📊 Performance Metrics</h3>
+			<h3>Performance Metrics</h3>
 			<div class="metrics">
 				<div class="metric">
 					<span class="metric-value">0.2ms</span>
@@ -411,4 +373,54 @@ func (h *DocsHandler) ServeStatic(w http.ResponseWriter, r *http.Request, conten
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Cache-Control", "public, max-age=31536000") // Cache for 1 year
 	w.Write(content)
+}
+
+// Enhanced Live Demo Handlers
+
+// Enhanced Todo Demo Handler
+func (h *DocsHandler) TodoDemoHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		// Return the enhanced todo form and list
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprint(w, `
+		<div class="todo-demo">
+			<form hx-post="/api/demo/todo" hx-target="#todo-list" hx-swap="beforeend" hx-on::after-request="this.reset()">
+				<input name="task" type="text" placeholder="Add a new task..." required maxlength="100">
+				<button type="submit">Add Task</button>
+			</form>
+			<div id="todo-list" class="todo-list">
+				<div class="todo-item">
+					<span class="todo-text">Example: Learn HTMX hypermedia patterns</span>
+					<button class="todo-delete" hx-delete="/api/demo/todo/1" hx-target="closest .todo-item" hx-swap="outerHTML">×</button>
+				</div>
+				<div class="todo-item">
+					<span class="todo-text">Example: Build with Go standard library</span>
+					<button class="todo-delete" hx-delete="/api/demo/todo/2" hx-target="closest .todo-item" hx-swap="outerHTML">×</button>
+				</div>
+			</div>
+		</div>`)
+
+	case "POST":
+		task := r.FormValue("task")
+		if task == "" {
+			utils.Error(w, http.StatusBadRequest, "Task is required")
+			return
+		}
+
+		// Generate a random ID for this demo
+		id := time.Now().UnixNano()
+
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprintf(w, `
+		<div class="todo-item" style="animation: slideIn 0.3s ease-out">
+			<span class="todo-text">%s</span>
+			<button class="todo-delete" hx-delete="/api/demo/todo/%d" hx-target="closest .todo-item" hx-swap="outerHTML">×</button>
+		</div>`, template.HTMLEscapeString(task), id)
+
+	case "DELETE":
+		// Just return empty content to remove the item
+		w.Header().Set("Content-Type", "text/html")
+		w.Write([]byte(""))
+	}
 }

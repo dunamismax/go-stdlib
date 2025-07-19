@@ -60,19 +60,19 @@ func colorPrint(color, message string) {
 }
 
 func printSection(title string) {
-	colorPrint(colorCyan, fmt.Sprintf("🚀 %s", title))
+	colorPrint(colorCyan, fmt.Sprintf("%s", title))
 }
 
 func printSuccess(message string) {
-	colorPrint(colorGreen, fmt.Sprintf("✅ %s", message))
+	colorPrint(colorGreen, fmt.Sprintf("%s", message))
 }
 
 func printError(message string) {
-	colorPrint(colorRed, fmt.Sprintf("❌ %s", message))
+	colorPrint(colorRed, fmt.Sprintf("%s", message))
 }
 
 func printWarning(message string) {
-	colorPrint(colorYellow, fmt.Sprintf("⚠️  %s", message))
+	colorPrint(colorYellow, fmt.Sprintf("%s", message))
 }
 
 // Development namespace
@@ -134,6 +134,11 @@ func Help() {
 	fmt.Println("  mage runapiwithair   Run API playground with Air live reload")
 	fmt.Println("  mage runsocialwithair Run GoSocial with Air live reload")
 	fmt.Println("  mage rundocswithair  Run GoHyperDocs with Air live reload")
+	fmt.Println()
+	colorPrint(colorBlue, "Frontend Development Commands:")
+	fmt.Println("  mage runapifrontenddev    Run API playground Vite dev server")
+	fmt.Println("  mage runsocialfrontenddev Run GoSocial Vite dev server")
+	fmt.Println("  mage rundocsfrontenddev   Run GoHyperDocs Vite dev server")
 }
 
 // Clean removes build artifacts and caches
@@ -159,7 +164,7 @@ func Status() error {
 	fmt.Println()
 
 	// Project structure
-	colorPrint(colorBlue, "📁 Project Structure:")
+	colorPrint(colorBlue, "Project Structure:")
 	webFiles, _ := countGoFiles(webDir)
 	pkgFiles, _ := countGoFiles(pkgDir)
 
@@ -168,7 +173,7 @@ func Status() error {
 	fmt.Println()
 
 	// Tech Stack
-	colorPrint(colorBlue, "🔧 Tech Stack:")
+	colorPrint(colorBlue, "Tech Stack:")
 	fmt.Println("  Backend:      Go + net/http")
 	fmt.Println("  Frontend:     HTMX + html/template")
 	fmt.Println("  Database:     SQLite (CGO-free)")
@@ -178,13 +183,13 @@ func Status() error {
 	fmt.Println()
 
 	// Applications
-	colorPrint(colorBlue, "📱 Applications:")
+	colorPrint(colorBlue, "Applications:")
 	fmt.Println("  API Playground:  Interactive API testing (Port 8080)")
 	fmt.Println("  GoSocial:        Social media platform (Port 8081)")
 	fmt.Println()
 
 	// Build status
-	colorPrint(colorBlue, "🏗️  Build Status:")
+	colorPrint(colorBlue, "Build Status:")
 	if _, err := os.Stat(buildDir); os.IsNotExist(err) {
 		fmt.Println("  No builds found. Run 'mage build:all' to build all applications.")
 	} else {
@@ -199,7 +204,7 @@ func Status() error {
 	fmt.Println()
 
 	// Line count
-	colorPrint(colorBlue, "📊 Line Count:")
+	colorPrint(colorBlue, "Line Count:")
 	totalLines, _ := countTotalLines(".")
 	fmt.Printf("  Total Go code: %d lines\n", totalLines)
 
@@ -281,7 +286,7 @@ func (Dev) Deps() error {
 
 	for _, dir := range modules {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			fmt.Printf("  📁 Downloading dependencies for %s\n", dir)
+			fmt.Printf("  Downloading dependencies for %s\n", dir)
 			if err := sh.RunWith(map[string]string{"PWD": dir}, "go", "mod", "download"); err != nil {
 				return err
 			}
@@ -309,7 +314,7 @@ func (Dev) Tidy() error {
 
 	for _, dir := range modules {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			fmt.Printf("  📁 Tidying %s\n", dir)
+			fmt.Printf("  Tidying %s\n", dir)
 			if err := sh.RunWith(map[string]string{"PWD": dir}, "go", "mod", "tidy"); err != nil {
 				return err
 			}
@@ -349,7 +354,7 @@ func (Dev) Lint() error {
 
 	for _, dir := range modules {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			fmt.Printf("  🔍 Vetting %s\n", dir)
+			fmt.Printf("  Vetting %s\n", dir)
 			if err := sh.RunWith(map[string]string{"PWD": dir}, "go", "vet", "./..."); err != nil {
 				printWarning(fmt.Sprintf("Vetting failed for %s: %v", dir, err))
 				continue
@@ -367,7 +372,7 @@ func (Dev) Start() error {
 
 	mg.Deps(Build.Web)
 
-	colorPrint(colorCyan, "🌐 Applications running:")
+	colorPrint(colorCyan, "Applications running:")
 	colorPrint(colorGreen, "  API Playground: http://localhost:8080")
 	colorPrint(colorGreen, "  GoSocial: http://localhost:8081")
 	colorPrint(colorGreen, "  GoHyperDocs: http://localhost:8082")
@@ -386,7 +391,7 @@ func (Dev) StartWithAir() error {
 		return err
 	}
 
-	colorPrint(colorCyan, "🌐 Applications with live reloading:")
+	colorPrint(colorCyan, "Applications with live reloading:")
 	colorPrint(colorGreen, "  API Playground: http://localhost:8080")
 	colorPrint(colorGreen, "  GoSocial: http://localhost:8081")
 	colorPrint(colorGreen, "  GoHyperDocs: http://localhost:8082")
@@ -487,6 +492,12 @@ func (Build) API() error {
 		return err
 	}
 
+	// Build frontend assets with Vite
+	if err := buildAPIFrontend(); err != nil {
+		return fmt.Errorf("failed to build frontend: %w", err)
+	}
+
+	// Build Go binary
 	if err := sh.Run("go", "build", "-o", apiPlaygroundBin, apiPlaygroundDir); err != nil {
 		return err
 	}
@@ -503,6 +514,12 @@ func (Build) Social() error {
 		return err
 	}
 
+	// Build frontend assets with Vite
+	if err := buildSocialFrontend(); err != nil {
+		return fmt.Errorf("failed to build frontend: %w", err)
+	}
+
+	// Build Go binary
 	if err := sh.Run("go", "build", "-o", goSocialBin, goSocialDir); err != nil {
 		return err
 	}
@@ -519,6 +536,12 @@ func (Build) Docs() error {
 		return err
 	}
 
+	// Build frontend assets with Vite
+	if err := buildDocsFrontend(); err != nil {
+		return fmt.Errorf("failed to build frontend: %w", err)
+	}
+
+	// Build Go binary
 	if err := sh.Run("go", "build", "-o", goHyperDocsBin, goHyperDocsDir); err != nil {
 		return err
 	}
@@ -535,7 +558,7 @@ func (Build) showBuildResults() error {
 	}
 
 	fmt.Println()
-	colorPrint(colorGreen, "🎉 Build Results:")
+	colorPrint(colorGreen, "Build Results:")
 	for _, file := range files {
 		if info, err := os.Stat(file); err == nil && !info.IsDir() {
 			fmt.Printf("  %s\n", file)
@@ -562,7 +585,7 @@ func (Test) All() error {
 
 	for _, dir := range modules {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			fmt.Printf("  🧪 Running tests in %s\n", dir)
+			fmt.Printf("  Running tests in %s\n", dir)
 			if err := sh.RunWith(map[string]string{"PWD": dir}, "go", "test", "./..."); err != nil {
 				printWarning(fmt.Sprintf("Tests failed for %s: %v", dir, err))
 				continue
@@ -604,7 +627,7 @@ func (Tools) Install() error {
 
 	// Install Air
 	if _, err := exec.LookPath("air"); err != nil {
-		fmt.Println("  📦 Installing Air live reload...")
+		fmt.Println("  Installing Air live reload...")
 		if err := sh.Run("go", "install", "github.com/air-verse/air@latest"); err != nil {
 			return err
 		}
@@ -612,7 +635,7 @@ func (Tools) Install() error {
 
 	// Install golangci-lint
 	if _, err := exec.LookPath("golangci-lint"); err != nil {
-		fmt.Println("  📦 Installing golangci-lint...")
+		fmt.Println("  Installing golangci-lint...")
 		cmd := "curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2"
 		if err := sh.RunV("sh", "-c", cmd); err != nil {
 			return err
@@ -621,10 +644,25 @@ func (Tools) Install() error {
 
 	// Install gosec
 	if _, err := exec.LookPath("gosec"); err != nil {
-		fmt.Println("  📦 Installing gosec...")
+		fmt.Println("  Installing gosec...")
 		if err := sh.Run("go", "install", "github.com/securego/gosec/v2/cmd/gosec@latest"); err != nil {
 			return err
 		}
+	}
+
+	// Install Node.js dependencies for API Playground
+	if err := installAPIFrontendDeps(); err != nil {
+		return fmt.Errorf("failed to install API playground frontend dependencies: %w", err)
+	}
+
+	// Install Node.js dependencies for GoSocial
+	if err := installSocialFrontendDeps(); err != nil {
+		return fmt.Errorf("failed to install GoSocial frontend dependencies: %w", err)
+	}
+
+	// Install Node.js dependencies for GoHyperDocs
+	if err := installDocsFrontendDeps(); err != nil {
+		return fmt.Errorf("failed to install GoHyperDocs frontend dependencies: %w", err)
 	}
 
 	printSuccess("Development tools installed")
@@ -648,7 +686,7 @@ func (Tools) Upgrade() error {
 
 	for _, dir := range modules {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			fmt.Printf("  📁 Upgrading %s\n", dir)
+			fmt.Printf("  Upgrading %s\n", dir)
 			if err := sh.RunWith(map[string]string{"PWD": dir}, "go", "get", "-u", "./..."); err != nil {
 				return err
 			}
@@ -736,7 +774,7 @@ func Format() error {
 
 	for _, dir := range modules {
 		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
-			fmt.Printf("  📁 Tidying %s\n", dir)
+			fmt.Printf("  Tidying %s\n", dir)
 			if err := sh.RunWith(map[string]string{"PWD": dir}, "go", "mod", "tidy"); err != nil {
 				printWarning(fmt.Sprintf("Failed to tidy %s: %v", dir, err))
 				continue
@@ -783,14 +821,14 @@ func Watch() error {
 // RunAPI runs API playground only
 func RunAPI() error {
 	mg.Deps(Build.API)
-	colorPrint(colorCyan, "🌐 API Playground: http://localhost:8080")
+	colorPrint(colorCyan, "API Playground: http://localhost:8080")
 	return sh.Run(apiPlaygroundBin)
 }
 
 // RunSocial runs GoSocial only
 func RunSocial() error {
 	mg.Deps(Build.Social)
-	colorPrint(colorCyan, "🌐 GoSocial: http://localhost:8081")
+	colorPrint(colorCyan, "GoSocial: http://localhost:8081")
 	return sh.Run(goSocialBin)
 }
 
@@ -804,7 +842,13 @@ func RunAPIWithAir() error {
 		return err
 	}
 
-	colorPrint(colorCyan, "🌐 API Playground with live reload: http://localhost:8080")
+	// Build frontend first
+	if err := buildAPIFrontend(); err != nil {
+		return fmt.Errorf("failed to build frontend: %w", err)
+	}
+
+	colorPrint(colorCyan, "API Playground with live reload: http://localhost:8080")
+	colorPrint(colorYellow, "Note: For frontend development, also run 'npm run dev' in the api-playground directory")
 	return sh.RunWith(map[string]string{"PWD": apiPlaygroundDir}, "air")
 }
 
@@ -818,14 +862,20 @@ func RunSocialWithAir() error {
 		return err
 	}
 
-	colorPrint(colorCyan, "🌐 GoSocial with live reload: http://localhost:8081")
+	// Build frontend first
+	if err := buildSocialFrontend(); err != nil {
+		return fmt.Errorf("failed to build frontend: %w", err)
+	}
+
+	colorPrint(colorCyan, "GoSocial with live reload: http://localhost:8081")
+	colorPrint(colorYellow, "Note: For frontend development, also run 'npm run dev' in the go-social directory")
 	return sh.RunWith(map[string]string{"PWD": goSocialDir}, "air")
 }
 
 // RunDocs runs GoHyperDocs only
 func RunDocs() error {
 	mg.Deps(Build.Docs)
-	colorPrint(colorCyan, "🌐 GoHyperDocs: http://localhost:8082")
+	colorPrint(colorCyan, "GoHyperDocs: http://localhost:8082")
 	return sh.Run(goHyperDocsBin)
 }
 
@@ -839,8 +889,215 @@ func RunDocsWithAir() error {
 		return err
 	}
 
-	colorPrint(colorCyan, "🌐 GoHyperDocs with live reload: http://localhost:8082")
+	// Build frontend first
+	if err := buildDocsFrontend(); err != nil {
+		return fmt.Errorf("failed to build frontend: %w", err)
+	}
+
+	colorPrint(colorCyan, "GoHyperDocs with live reload: http://localhost:8082")
+	colorPrint(colorYellow, "Note: For frontend development, also run 'npm run dev' in the gohyperdocs directory")
 	return sh.RunWith(map[string]string{"PWD": goHyperDocsDir}, "air")
+}
+
+// buildAPIFrontend builds the frontend assets using Vite
+func buildAPIFrontend() error {
+	fmt.Println("  Building API Playground frontend with Vite...")
+
+	// Check if package.json exists
+	if _, err := os.Stat(filepath.Join(apiPlaygroundDir, "package.json")); os.IsNotExist(err) {
+		printWarning("package.json not found, skipping frontend build")
+		return nil
+	}
+
+	// Install dependencies if node_modules doesn't exist
+	if _, err := os.Stat(filepath.Join(apiPlaygroundDir, "node_modules")); os.IsNotExist(err) {
+		if err := installAPIFrontendDeps(); err != nil {
+			return err
+		}
+	}
+
+	// Run Vite build
+	if err := sh.RunWith(map[string]string{"PWD": apiPlaygroundDir}, "npm", "run", "build"); err != nil {
+		return fmt.Errorf("vite build failed: %w", err)
+	}
+
+	return nil
+}
+
+// installAPIFrontendDeps installs Node.js dependencies for API Playground
+func installAPIFrontendDeps() error {
+	// Check if Node.js is available
+	if _, err := exec.LookPath("node"); err != nil {
+		printWarning("Node.js not found. Please install Node.js to build frontend assets.")
+		return nil
+	}
+
+	// Check if npm is available
+	if _, err := exec.LookPath("npm"); err != nil {
+		printWarning("npm not found. Please install npm to build frontend assets.")
+		return nil
+	}
+
+	fmt.Println("  Installing API Playground frontend dependencies...")
+	if err := sh.RunWith(map[string]string{"PWD": apiPlaygroundDir}, "npm", "install"); err != nil {
+		return fmt.Errorf("npm install failed: %w", err)
+	}
+
+	return nil
+}
+
+// RunAPIFrontendDev runs the Vite dev server for API Playground frontend development
+func RunAPIFrontendDev() error {
+	printSection("Starting API Playground frontend dev server...")
+
+	// Check if Node.js is available
+	if _, err := exec.LookPath("node"); err != nil {
+		printError("Node.js not found. Please install Node.js.")
+		return err
+	}
+
+	// Install dependencies if needed
+	if err := installAPIFrontendDeps(); err != nil {
+		return err
+	}
+
+	colorPrint(colorCyan, "Vite dev server: http://localhost:3000")
+	colorPrint(colorYellow, "API calls will be proxied to Go backend at http://localhost:8080")
+	return sh.RunWith(map[string]string{"PWD": apiPlaygroundDir}, "npm", "run", "dev")
+}
+
+// buildSocialFrontend builds the frontend assets for GoSocial using Vite
+func buildSocialFrontend() error {
+	fmt.Println("  Building GoSocial frontend with Vite...")
+
+	// Check if package.json exists
+	if _, err := os.Stat(filepath.Join(goSocialDir, "package.json")); os.IsNotExist(err) {
+		printWarning("package.json not found, skipping frontend build")
+		return nil
+	}
+
+	// Install dependencies if node_modules doesn't exist
+	if _, err := os.Stat(filepath.Join(goSocialDir, "node_modules")); os.IsNotExist(err) {
+		if err := installSocialFrontendDeps(); err != nil {
+			return err
+		}
+	}
+
+	// Run Vite build
+	if err := sh.RunWith(map[string]string{"PWD": goSocialDir}, "npm", "run", "build"); err != nil {
+		return fmt.Errorf("vite build failed: %w", err)
+	}
+
+	return nil
+}
+
+// installSocialFrontendDeps installs Node.js dependencies for GoSocial
+func installSocialFrontendDeps() error {
+	// Check if Node.js is available
+	if _, err := exec.LookPath("node"); err != nil {
+		printWarning("Node.js not found. Please install Node.js to build frontend assets.")
+		return nil
+	}
+
+	// Check if npm is available
+	if _, err := exec.LookPath("npm"); err != nil {
+		printWarning("npm not found. Please install npm to build frontend assets.")
+		return nil
+	}
+
+	fmt.Println("  Installing GoSocial frontend dependencies...")
+	if err := sh.RunWith(map[string]string{"PWD": goSocialDir}, "npm", "install"); err != nil {
+		return fmt.Errorf("npm install failed: %w", err)
+	}
+
+	return nil
+}
+
+// RunSocialFrontendDev runs the Vite dev server for GoSocial frontend development
+func RunSocialFrontendDev() error {
+	printSection("Starting GoSocial frontend dev server...")
+
+	// Check if Node.js is available
+	if _, err := exec.LookPath("node"); err != nil {
+		printError("Node.js not found. Please install Node.js.")
+		return err
+	}
+
+	// Install dependencies if needed
+	if err := installSocialFrontendDeps(); err != nil {
+		return err
+	}
+
+	colorPrint(colorCyan, "Vite dev server: http://localhost:3001")
+	colorPrint(colorYellow, "API calls will be proxied to Go backend at http://localhost:8081")
+	return sh.RunWith(map[string]string{"PWD": goSocialDir}, "npm", "run", "dev")
+}
+
+// buildDocsFrontend builds the frontend assets for GoHyperDocs using Vite
+func buildDocsFrontend() error {
+	fmt.Println("  Building GoHyperDocs frontend with Vite...")
+
+	// Check if package.json exists
+	if _, err := os.Stat(filepath.Join(goHyperDocsDir, "package.json")); os.IsNotExist(err) {
+		printWarning("package.json not found, skipping frontend build")
+		return nil
+	}
+
+	// Install dependencies if node_modules doesn't exist
+	if _, err := os.Stat(filepath.Join(goHyperDocsDir, "node_modules")); os.IsNotExist(err) {
+		if err := installDocsFrontendDeps(); err != nil {
+			return err
+		}
+	}
+
+	// Run Vite build
+	if err := sh.RunWith(map[string]string{"PWD": goHyperDocsDir}, "npm", "run", "build"); err != nil {
+		return fmt.Errorf("vite build failed: %w", err)
+	}
+
+	return nil
+}
+
+// installDocsFrontendDeps installs Node.js dependencies for GoHyperDocs
+func installDocsFrontendDeps() error {
+	// Check if Node.js is available
+	if _, err := exec.LookPath("node"); err != nil {
+		printWarning("Node.js not found. Please install Node.js to build frontend assets.")
+		return nil
+	}
+
+	// Check if npm is available
+	if _, err := exec.LookPath("npm"); err != nil {
+		printWarning("npm not found. Please install npm to build frontend assets.")
+		return nil
+	}
+
+	fmt.Println("  Installing GoHyperDocs frontend dependencies...")
+	if err := sh.RunWith(map[string]string{"PWD": goHyperDocsDir}, "npm", "install"); err != nil {
+		return fmt.Errorf("npm install failed: %w", err)
+	}
+
+	return nil
+}
+
+// RunDocsFrontendDev runs the Vite dev server for GoHyperDocs frontend development
+func RunDocsFrontendDev() error {
+	printSection("Starting GoHyperDocs frontend dev server...")
+
+	// Check if Node.js is available
+	if _, err := exec.LookPath("node"); err != nil {
+		printError("Node.js not found. Please install Node.js.")
+		return err
+	}
+
+	// Install dependencies if needed
+	if err := installDocsFrontendDeps(); err != nil {
+		return err
+	}
+
+	colorPrint(colorCyan, "Vite dev server: http://localhost:3002")
+	colorPrint(colorYellow, "API calls will be proxied to Go backend at http://localhost:8082")
+	return sh.RunWith(map[string]string{"PWD": goHyperDocsDir}, "npm", "run", "dev")
 }
 
 // Docs generates documentation
