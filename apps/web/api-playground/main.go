@@ -3,17 +3,19 @@ package main
 import (
 	"crypto/rand"
 	"crypto/sha256"
-	_ "embed"
+	"embed"
 	"encoding/base64"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
-	"log/slog"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 //go:embed dist/*
@@ -25,29 +27,59 @@ var indexHTML string
 //go:embed templates/result.html
 var resultHTML string
 
-var (
-	indexTemplate  *template.Template
-	resultTemplate *template.Template
-)
-
-func init() {
-	indexTemplate = template.Must(template.New("index").Parse(indexHTML))
-	resultTemplate = template.Must(template.New("result").Parse(resultHTML))
+type TemplateRenderer struct {
+	templates map[string]*template.Template
 }
 
-type App struct{}
+func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	tmpl, ok := t.templates[name]
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Template not found")
+	}
+	return tmpl.Execute(w, data)
+}
+
+func NewTemplateRenderer() *TemplateRenderer {
+	return &TemplateRenderer{
+		templates: map[string]*template.Template{
+			"index":  template.Must(template.New("index").Parse(indexHTML)),
+			"result": template.Must(template.New("result").Parse(resultHTML)),
+		},
+	}
+}
+
+type App struct {
+	echo *echo.Echo
+}
 
 func NewApp() *App {
-	return &App{}
+	e := echo.New()
+	
+	// Configure Echo
+	e.HideBanner = true
+	e.Renderer = NewTemplateRenderer()
+	
+	// Middleware
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
+	e.Use(middleware.Secure())
+	e.Use(middleware.RequestID())
+	
+	// Custom middleware for structured logging
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "${time_rfc3339} ${id} ${remote_ip} ${host} ${method} ${uri} ${user_agent} ${status} ${error} ${latency} ${latency_human} ${bytes_in} ${bytes_out}\n",
+	}))
+	
+	return &App{echo: e}
 }
 
-func (a *App) homePage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-	indexTemplate.Execute(w, nil)
+func (a *App) homePage(c echo.Context) error {
+	return c.Render(http.StatusOK, "index", nil)
 }
 
-func (a *App) analyzeText(w http.ResponseWriter, r *http.Request) {
-	text := r.FormValue("text")
+func (a *App) analyzeText(c echo.Context) error {
+	text := c.FormValue("text")
 
 	chars := len(text)
 	words := len(strings.Fields(text))
@@ -62,12 +94,11 @@ func (a *App) analyzeText(w http.ResponseWriter, r *http.Request) {
 		"Paragraphs": paragraphs,
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) reverseText(w http.ResponseWriter, r *http.Request) {
-	text := r.FormValue("text")
+func (a *App) reverseText(c echo.Context) error {
+	text := c.FormValue("text")
 
 	runes := []rune(text)
 	n := len(runes)
@@ -80,24 +111,22 @@ func (a *App) reverseText(w http.ResponseWriter, r *http.Request) {
 		"Result": string(runes),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) titleCase(w http.ResponseWriter, r *http.Request) {
-	text := r.FormValue("text")
+func (a *App) titleCase(c echo.Context) error {
+	text := c.FormValue("text")
 
 	data := map[string]interface{}{
 		"Title":  "Title Case:",
 		"Result": strings.Title(text),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) countVowels(w http.ResponseWriter, r *http.Request) {
-	text := r.FormValue("text")
+func (a *App) countVowels(c echo.Context) error {
+	text := c.FormValue("text")
 
 	vowels := "aeiouAEIOU"
 	count := 0
@@ -112,13 +141,12 @@ func (a *App) countVowels(w http.ResponseWriter, r *http.Request) {
 		"Result": fmt.Sprintf("Vowels: %d", count),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) randomNumber(w http.ResponseWriter, r *http.Request) {
-	minStr := r.FormValue("min")
-	maxStr := r.FormValue("max")
+func (a *App) randomNumber(c echo.Context) error {
+	minStr := c.FormValue("min")
+	maxStr := c.FormValue("max")
 
 	min, _ := strconv.Atoi(minStr)
 	max, _ := strconv.Atoi(maxStr)
@@ -143,11 +171,10 @@ func (a *App) randomNumber(w http.ResponseWriter, r *http.Request) {
 		"Result": fmt.Sprintf("%d", num),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) randomString(w http.ResponseWriter, r *http.Request) {
+func (a *App) randomString(c echo.Context) error {
 	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	length := 10
 
@@ -164,11 +191,10 @@ func (a *App) randomString(w http.ResponseWriter, r *http.Request) {
 		"Result": string(result),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) generateUUID(w http.ResponseWriter, r *http.Request) {
+func (a *App) generateUUID(c echo.Context) error {
 	// Generate UUID using crypto/rand
 	uuid := make([]byte, 16)
 	rand.Read(uuid)
@@ -185,12 +211,11 @@ func (a *App) generateUUID(w http.ResponseWriter, r *http.Request) {
 		"Result": uuidStr,
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) sha256Hash(w http.ResponseWriter, r *http.Request) {
-	text := r.FormValue("text")
+func (a *App) sha256Hash(c echo.Context) error {
+	text := c.FormValue("text")
 
 	hash := sha256.Sum256([]byte(text))
 
@@ -199,12 +224,11 @@ func (a *App) sha256Hash(w http.ResponseWriter, r *http.Request) {
 		"Result": fmt.Sprintf("%x", hash),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) base64Encode(w http.ResponseWriter, r *http.Request) {
-	text := r.FormValue("text")
+func (a *App) base64Encode(c echo.Context) error {
+	text := c.FormValue("text")
 
 	encoded := base64.StdEncoding.EncodeToString([]byte(text))
 
@@ -213,12 +237,11 @@ func (a *App) base64Encode(w http.ResponseWriter, r *http.Request) {
 		"Result": encoded,
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) base64Decode(w http.ResponseWriter, r *http.Request) {
-	text := r.FormValue("text")
+func (a *App) base64Decode(c echo.Context) error {
+	text := c.FormValue("text")
 
 	decoded, err := base64.StdEncoding.DecodeString(text)
 	if err != nil {
@@ -226,9 +249,7 @@ func (a *App) base64Decode(w http.ResponseWriter, r *http.Request) {
 			"Title":  "Error:",
 			"Result": "Invalid base64 string",
 		}
-		w.Header().Set("Content-Type", "text/html")
-		resultTemplate.Execute(w, data)
-		return
+		return c.Render(http.StatusOK, "result", data)
 	}
 
 	data := map[string]interface{}{
@@ -236,8 +257,7 @@ func (a *App) base64Decode(w http.ResponseWriter, r *http.Request) {
 		"Result": string(decoded),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
 // Fun APIs
@@ -280,7 +300,7 @@ var facts = []string{
 	"Python was named after Monty Python's Flying Circus, not the snake.",
 }
 
-func (a *App) randomJoke(w http.ResponseWriter, r *http.Request) {
+func (a *App) randomJoke(c echo.Context) error {
 	// Generate random index
 	b := make([]byte, 1)
 	rand.Read(b)
@@ -291,11 +311,10 @@ func (a *App) randomJoke(w http.ResponseWriter, r *http.Request) {
 		"Result": jokes[index],
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) randomQuote(w http.ResponseWriter, r *http.Request) {
+func (a *App) randomQuote(c echo.Context) error {
 	// Generate random index
 	b := make([]byte, 1)
 	rand.Read(b)
@@ -306,11 +325,10 @@ func (a *App) randomQuote(w http.ResponseWriter, r *http.Request) {
 		"Result": quotes[index],
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) randomFact(w http.ResponseWriter, r *http.Request) {
+func (a *App) randomFact(c echo.Context) error {
 	// Generate random index
 	b := make([]byte, 1)
 	rand.Read(b)
@@ -321,13 +339,12 @@ func (a *App) randomFact(w http.ResponseWriter, r *http.Request) {
 		"Result": facts[index],
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
 // Time and Date APIs
-func (a *App) currentTime(w http.ResponseWriter, r *http.Request) {
-	timezone := r.FormValue("timezone")
+func (a *App) currentTime(c echo.Context) error {
+	timezone := c.FormValue("timezone")
 	if timezone == "" {
 		timezone = "UTC"
 	}
@@ -338,9 +355,7 @@ func (a *App) currentTime(w http.ResponseWriter, r *http.Request) {
 			"Title":  "Error:",
 			"Result": "Invalid timezone: " + timezone,
 		}
-		w.Header().Set("Content-Type", "text/html")
-		resultTemplate.Execute(w, data)
-		return
+		return c.Render(http.StatusOK, "result", data)
 	}
 
 	now := time.Now().In(loc)
@@ -351,12 +366,11 @@ func (a *App) currentTime(w http.ResponseWriter, r *http.Request) {
 		"Result": formatted,
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) unixTimestamp(w http.ResponseWriter, r *http.Request) {
-	timezone := r.FormValue("timezone")
+func (a *App) unixTimestamp(c echo.Context) error {
+	timezone := c.FormValue("timezone")
 	if timezone == "" {
 		timezone = "UTC"
 	}
@@ -367,9 +381,7 @@ func (a *App) unixTimestamp(w http.ResponseWriter, r *http.Request) {
 			"Title":  "Error:",
 			"Result": "Invalid timezone: " + timezone,
 		}
-		w.Header().Set("Content-Type", "text/html")
-		resultTemplate.Execute(w, data)
-		return
+		return c.Render(http.StatusOK, "result", data)
 	}
 
 	now := time.Now().In(loc)
@@ -380,11 +392,10 @@ func (a *App) unixTimestamp(w http.ResponseWriter, r *http.Request) {
 		"Result": fmt.Sprintf("%d", timestamp),
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) dateFormats(w http.ResponseWriter, r *http.Request) {
+func (a *App) dateFormats(c echo.Context) error {
 	now := time.Now().UTC()
 
 	formats := []string{
@@ -408,96 +419,45 @@ func (a *App) dateFormats(w http.ResponseWriter, r *http.Request) {
 		"Result": result,
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	resultTemplate.Execute(w, data)
+	return c.Render(http.StatusOK, "result", data)
 }
 
-func (a *App) serveStatic(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	if path == "/static/" {
-		path = "/static/index.html"
-	}
+func (a *App) setupRoutes() {
+	// Static files using Echo's StaticFS
+	a.echo.StaticFS("/static", echo.MustSubFS(distFS, "dist"))
 
-	// Remove /static/ prefix and add dist/ prefix
-	filePath := "dist" + strings.TrimPrefix(path, "/static")
+	// Routes
+	a.echo.GET("/", a.homePage)
+	a.echo.POST("/analyze", a.analyzeText)
+	a.echo.POST("/reverse", a.reverseText)
+	a.echo.POST("/titlecase", a.titleCase)
+	a.echo.POST("/count-vowels", a.countVowels)
+	a.echo.POST("/random-number", a.randomNumber)
+	a.echo.POST("/random-string", a.randomString)
+	a.echo.POST("/uuid", a.generateUUID)
+	a.echo.POST("/sha256", a.sha256Hash)
+	a.echo.POST("/base64-encode", a.base64Encode)
+	a.echo.POST("/base64-decode", a.base64Decode)
 
-	// Read file from embedded filesystem
-	data, err := distFS.ReadFile(filePath)
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
+	// Fun APIs
+	a.echo.GET("/joke", a.randomJoke)
+	a.echo.GET("/quote", a.randomQuote)
+	a.echo.GET("/fact", a.randomFact)
 
-	// Set content type based on file extension
-	if strings.HasSuffix(filePath, ".css") {
-		w.Header().Set("Content-Type", "text/css")
-	} else if strings.HasSuffix(filePath, ".js") {
-		w.Header().Set("Content-Type", "application/javascript")
-	} else if strings.HasSuffix(filePath, ".html") {
-		w.Header().Set("Content-Type", "text/html")
-	}
-
-	// Set cache headers for static assets
-	w.Header().Set("Cache-Control", "public, max-age=31536000")
-	w.Write(data)
-}
-
-func loggerMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-		next.ServeHTTP(w, r)
-		slog.Info("HTTP request",
-			"method", r.Method,
-			"path", r.URL.Path,
-			"remote_addr", r.RemoteAddr,
-			"duration", time.Since(start),
-			"user_agent", r.UserAgent(),
-		)
-	})
+	// Time and Date APIs
+	a.echo.POST("/current-time", a.currentTime)
+	a.echo.POST("/timestamp", a.unixTimestamp)
+	a.echo.GET("/date-formats", a.dateFormats)
 }
 
 func main() {
-	// Setup structured logging
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: slog.LevelInfo,
-	}))
-	slog.SetDefault(logger)
-
 	app := NewApp()
+	app.setupRoutes()
 
-	mux := http.NewServeMux()
-
-	// Static files (Vite build output)
-	mux.HandleFunc("GET /static/", app.serveStatic)
-
-	// Routes
-	mux.HandleFunc("GET /", app.homePage)
-	mux.HandleFunc("POST /analyze", app.analyzeText)
-	mux.HandleFunc("POST /reverse", app.reverseText)
-	mux.HandleFunc("POST /titlecase", app.titleCase)
-	mux.HandleFunc("POST /count-vowels", app.countVowels)
-	mux.HandleFunc("POST /random-number", app.randomNumber)
-	mux.HandleFunc("POST /random-string", app.randomString)
-	mux.HandleFunc("POST /uuid", app.generateUUID)
-	mux.HandleFunc("POST /sha256", app.sha256Hash)
-	mux.HandleFunc("POST /base64-encode", app.base64Encode)
-	mux.HandleFunc("POST /base64-decode", app.base64Decode)
-
-	// Fun APIs
-	mux.HandleFunc("GET /joke", app.randomJoke)
-	mux.HandleFunc("GET /quote", app.randomQuote)
-	mux.HandleFunc("GET /fact", app.randomFact)
-
-	// Time and Date APIs
-	mux.HandleFunc("POST /current-time", app.currentTime)
-	mux.HandleFunc("POST /timestamp", app.unixTimestamp)
-	mux.HandleFunc("GET /date-formats", app.dateFormats)
-
-	handler := loggerMiddleware(mux)
-
-	slog.Info("API Playground starting", "port", ":8080")
-	if err := http.ListenAndServe(":8080", handler); err != nil {
-		slog.Error("Server failed to start", "error", err)
+	// Start server
+	app.echo.Logger.Info("API Playground starting on port :8080")
+	if err := app.echo.Start(":8080"); err != nil && err != http.ErrServerClosed {
+		app.echo.Logger.Fatal("Failed to start server:", err)
 		log.Fatal(err)
 	}
 }

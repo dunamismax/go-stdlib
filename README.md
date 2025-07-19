@@ -1,18 +1,19 @@
 <p align="center">
-  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/go-logo.png" alt="Go Standard Library Web Stack Logo" width="400" />
+  <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/go-logo.png" alt="Go Echo TypeScript Stack Logo" width="400" />
 </p>
 
 <p align="center">
   <a href="https://github.com/dunamismax/go-stdlib">
-    <img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&size=24&pause=1000&color=00ADD8&center=true&vCenter=true&width=800&lines=The+Ultimate+Go+Standard+Library+Web+Stack;Go+%2B+http.ServeMux+%2B+HTMX+%2B+html/template;Single-Binary+Deployment;SQLite+%2B+Vanilla+CSS;Mage+Build+System+%2B+Air+Live+Reload" alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com/?font=Fira+Code&size=24&pause=1000&color=00ADD8&center=true&vCenter=true&width=800&lines=The+Go+Echo+TypeScript+Stack;Echo+%2B+TypeScript+%2B+Vite+%2B+Pico.css;Single-Binary+Deployment;SQLite+%2B+Modern+Frontend;Mage+Build+System+%2B+Air+Live+Reload" alt="Typing SVG" />
   </a>
 </p>
 
 <p align="center">
   <a href="https://golang.org/"><img src="https://img.shields.io/badge/Go-1.24+-00ADD8.svg?logo=go" alt="Go Version"></a>
-  <a href="https://pkg.go.dev/net/http"><img src="https://img.shields.io/badge/Router-http.ServeMux-00ADD8.svg?logo=go" alt="Standard Library Router"></a>
-  <a href="https://htmx.org/"><img src="https://img.shields.io/badge/HTMX-2.0+-3366CC.svg?logo=htmx" alt="HTMX Version"></a>
-  <a href="https://pkg.go.dev/html/template"><img src="https://img.shields.io/badge/Templates-html/template-00ADD8.svg?logo=go" alt="Standard Library Templates"></a>
+  <a href="https://echo.labstack.com/"><img src="https://img.shields.io/badge/Framework-Echo-00ADD8.svg?logo=go" alt="Echo Framework"></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.6+-3178C6.svg?logo=typescript" alt="TypeScript Version"></a>
+  <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-5.4+-646CFF.svg?logo=vite" alt="Vite Version"></a>
+  <a href="https://picocss.com/"><img src="https://img.shields.io/badge/Pico.css-2.0+-1095c1.svg" alt="Pico.css Version"></a>
   <a href="https://sqlite.org/"><img src="https://img.shields.io/badge/SQLite-3.0+-003B57.svg?logo=sqlite" alt="SQLite Version"></a>
   <a href="https://magefile.org/"><img src="https://img.shields.io/badge/Mage-1.15+-purple.svg?logo=go" alt="Mage Version"></a>
   <a href="https://github.com/air-verse/air"><img src="https://img.shields.io/badge/Air-Live%20Reload-FF6B6B.svg" alt="Air Live Reload"></a>
@@ -23,29 +24,30 @@
 
 ## About
 
-A comprehensive monorepo showcasing **The Ultimate Go Standard Library Web Stack** - built for maximum simplicity, performance, and stability using only Go's standard library. Produces single, self-contained binaries with embedded assets and hypermedia-driven interfaces that deliver sub-millisecond response times.
+A comprehensive monorepo showcasing **The Go Echo TypeScript Stack** - built for high performance, modern development experience, and type safety using Echo framework, TypeScript, and Vite. Produces single, self-contained binaries with embedded assets and rich interactive interfaces that deliver sub-millisecond response times.
 
 **Core Philosophy:**
 
-- **Standard Library First** - Zero external dependencies for maximum stability
+- **Echo Framework First** - High-performance, extensible web framework for Go
 - **Single-Binary Deployment** - Everything embedded: templates, assets, database
-- **Hypermedia-Driven** - Rich interactions without JavaScript frameworks
-- **Progressive Enhancement** - Works without JS, enhanced with HTMX
-- **Type-Safe Templates** - Automatic XSS protection with html/template
+- **Type-Safe Development** - Full TypeScript integration for complex client interactions
+- **Modern Frontend Pipeline** - Vite + HMR for instant development feedback
+- **Progressive Enhancement** - Works without JavaScript, enhanced with TypeScript
+- **Template Safety** - Automatic XSS protection with Echo's template rendering
 - **Zero-Latency Data** - SQLite embedded database (CGO-free)
-- **Modern CSS** - Hand-crafted styling without framework overhead
+- **Modern CSS** - Pico.css semantic framework with custom styling
 
 ## Tech Stack
 
-| Layer           | Technology                                                                     | Purpose                                  |
-| --------------- | ------------------------------------------------------------------------------ | ---------------------------------------- |
-| **Backend**     | [Go](https://go.dev/doc/) + [net/http](https://pkg.go.dev/net/http)            | HTTP server with method-aware routing    |
-| **Database**    | [SQLite](https://www.sqlite.org/docs.html)                                     | Embedded database (CGO-free)             |
-| **Frontend**    | [HTMX](https://htmx.org/docs/) & [TypeScript](https://www.typescriptlang.org/) | Dynamic interactions with type safety    |
-| **Templates**   | [html/template](https://pkg.go.dev/html/template)                              | Type-safe HTML with XSS protection       |
-| **Styling**     | [Pico.css](https://picocss.com/) + Custom CSS                                  | Modern, semantic CSS framework           |
-| **Build Tools** | [Vite](https://vitejs.dev/) + [Mage](https://magefile.org/)                    | Modern frontend builds + Go automation   |
-| **Live Reload** | [Air](https://github.com/air-verse/air) + Vite HMR                             | Hot reloading for full-stack development |
+| Layer           | Technology                                                                  | Purpose                                        |
+| --------------- | --------------------------------------------------------------------------- | ---------------------------------------------- |
+| **Backend**     | [Echo](https://echo.labstack.com/) + [Go](https://go.dev/doc/)              | High-performance web framework with middleware |
+| **Database**    | [SQLite](https://www.sqlite.org/docs.html) (modernc.org/sqlite)             | Embedded database (CGO-free)                   |
+| **Frontend**    | [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/) | Type-safe development with modern tooling      |
+| **Templates**   | [Echo Template Renderer](https://echo.labstack.com/docs/templates)          | Server-side rendering with XSS protection      |
+| **Styling**     | [Pico.css](https://picocss.com/) + Custom CSS                               | Modern, semantic CSS framework                 |
+| **Build Tools** | [Vite](https://vitejs.dev/) + [Mage](https://magefile.org/)                 | Modern frontend builds + Go automation         |
+| **Live Reload** | [Air](https://github.com/air-verse/air) + Vite HMR                          | Hot reloading for full-stack development       |
 
 ## Quick Start
 
@@ -82,23 +84,24 @@ open http://localhost:8082
 
 ### GoHyperDocs (Port 8082) - **FEATURED**
 
-**The ultimate demonstration of the modern Go hypermedia stack.** A comprehensive documentation platform showcasing the complete integration of Go's standard library, HTMX, TypeScript, Vite, and Pico.css for building high-performance web applications.
+**The ultimate demonstration of the Go Echo TypeScript stack.** A comprehensive documentation platform showcasing the complete integration of Echo framework, TypeScript, Vite, and Pico.css for building high-performance web applications.
 
 **Key Features:**
 
-- **Modern frontend stack** - TypeScript + Vite + Pico.css with Hot Module Replacement
-- **Type-safe development** - Full TypeScript integration for complex client-side interactions
+- **Modern Echo backend** - High-performance routing, middleware, and template rendering
+- **TypeScript frontend** - Full type safety for complex client-side interactions
+- **Vite build pipeline** - Lightning-fast development with Hot Module Replacement
 - **25+ interactive documentation sections** covering the entire stack
-- **6 live HTMX demonstrations** - real-time stats, form validation, todo lists, tab navigation
+- **6 live demonstrations** - real-time stats, form validation, todo lists, tab navigation
 - **Performance showcases** - sub-millisecond response times, optimized asset bundles
 - **Beautiful Pico.css design** with semantic HTML and modern aesthetics
-- **Progressive enhancement** - works without JavaScript, enhanced with HTMX and TypeScript
+- **Progressive enhancement** - works without JavaScript, enhanced with TypeScript
 - **Comprehensive code examples** with real-world implementations
 
 **Tech Categories Covered:**
 
 - Getting Started & Quick Setup
-- HTMX Features & Patterns
+- Echo Framework Features & Patterns
 - TypeScript & Vite Integration
 - Go Backend Architecture
 - Deployment & Production
@@ -107,11 +110,28 @@ open http://localhost:8082
 
 ### API Playground (Port 8080)
 
-Interactive API testing platform with text analysis, random generators, hash/encoding tools, and time utilities. **Now powered by Vite + TypeScript + Pico.css** for a modern development experience with hot module replacement and type safety.
+Interactive API testing platform with text analysis, random generators, hash/encoding tools, and time utilities. **Built with Echo + TypeScript + Vite + Pico.css** for high-performance API endpoints and modern development experience with hot module replacement and type safety.
+
+**Features:**
+
+- Text analysis and manipulation tools
+- Cryptographically secure random generators
+- Encoding/hashing utilities
+- Fun APIs (jokes, quotes, tech facts)
+- Time and date utilities
+- Real-time interactive interface
 
 ### GoSocial (Port 8081)
 
-Social media platform with secure authentication, real-time feeds, SQLite database, and responsive design. **Now powered by Vite + TypeScript + Pico.css** for a modern development experience with hot module replacement and type safety.
+Social media platform with secure authentication, real-time feeds, SQLite database, and responsive design. **Built with Echo + TypeScript + Vite + Pico.css** for high-performance social interactions and modern development experience.
+
+**Features:**
+
+- User authentication and profiles
+- Real-time social feeds
+- Secure data handling
+- Responsive design
+- Type-safe client interactions
 
 <p align="center">
   <img src="https://github.com/dunamismax/go-web/blob/main/docs/images/gopher-mage.svg" alt="Gopher Mage" width="150" />
@@ -171,7 +191,7 @@ Air automatically watches for changes in:
 - Go source files (`.go`)
 - HTML templates (`.html`, `.tmpl`)
 - CSS stylesheets (`.css`)
-- JavaScript files (`.js`)
+- JavaScript/TypeScript files (`.js`, `.ts`)
 
 When changes are detected, Air rebuilds and restarts the applications instantly.
 
@@ -191,7 +211,7 @@ mage runsocial  # GoSocial only
 
 ### Frontend Development
 
-All three applications now use **Vite + TypeScript + Pico.css** for modern frontend development:
+All three applications use **Echo + TypeScript + Vite + Pico.css** for modern frontend development:
 
 ## API Playground Frontend Development
 
@@ -204,7 +224,7 @@ mage runapiwithair
 mage runapifrontenddev
 ```
 
-The Vite dev server (<http://localhost:3000>) proxies API calls to the Go backend (<http://localhost:8080>).
+The Vite dev server (<http://localhost:3000>) proxies API calls to the Echo backend (<http://localhost:8080>).
 
 ## GoSocial Frontend Development
 
@@ -217,7 +237,7 @@ mage runsocialwithair
 mage runsocialfrontenddev
 ```
 
-The Vite dev server (<http://localhost:3001>) proxies API calls to the Go backend (<http://localhost:8081>).
+The Vite dev server (<http://localhost:3001>) proxies API calls to the Echo backend (<http://localhost:8081>).
 
 ## GoHyperDocs Frontend Development
 
@@ -230,7 +250,7 @@ mage rundocswithair
 mage rundocsfrontenddev
 ```
 
-The Vite dev server (<http://localhost:3002>) proxies API calls to the Go backend (<http://localhost:8082>).
+The Vite dev server (<http://localhost:3002>) proxies API calls to the Echo backend (<http://localhost:8082>).
 
 ## Frontend Features
 
@@ -240,30 +260,31 @@ All three applications provide:
 - **Type-safe development** with TypeScript
 - **Modern CSS** with Pico.css framework
 - **Optimized builds** with automatic code splitting and minification
+- **Echo template integration** for server-side rendering
 
 ## Package Architecture
 
 ### Applications (`apps/web/`)
 
-- **gohyperdocs** - Comprehensive documentation platform showcasing the complete modern Go hypermedia stack with TypeScript + Vite + Pico.css
+- **gohyperdocs** - Comprehensive documentation platform showcasing the complete Echo TypeScript stack with Vite + Pico.css
 - **api-playground** - Interactive API testing with utilities and generators
 - **go-social** - Social media platform with authentication and real-time features
 
 ### Shared Packages (`pkg/`)
 
 - **database** - SQLite management with migrations, connection pooling, and CGO-free drivers
-- **middleware** - HTTP middleware for structured logging, CORS, rate limiting, and security
+- **middleware** - Echo middleware for structured logging, CORS, rate limiting, and security
 - **utils** - Response helpers, text processing, random generation, and validation
-- **components** - Reusable HTMX components and templates
+- **components** - Reusable Echo components and templates
 - **styles** - Shared CSS utilities and design system components
 
 ### Features Demonstrated
 
-- **Zero-dependency routing** with Go 1.22+ net/http.ServeMux patterns
-- **Progressive enhancement** with HTMX hypermedia interactions
+- **Echo framework routing** with high-performance middleware stack
+- **Progressive enhancement** with TypeScript and modern tooling
 - **Embedded assets** using go:embed for single-binary deployment
-- **Type-safe templating** with html/template and XSS protection
-- **Real-time interactions** without WebSockets or JavaScript frameworks
+- **Type-safe templating** with Echo's template renderer and XSS protection
+- **Real-time interactions** with TypeScript and modern frontend patterns
 - **Performance optimization** with sub-millisecond response times
 
 ## Production Deployment
@@ -296,27 +317,30 @@ mage prod:release
 
 ### **Performance Advantages**
 
+- **Echo Framework**: High-performance routing and middleware with minimal overhead
 - **Compiled Binary**: No interpretation overhead, maximum execution speed
 - **Embedded Assets**: Zero file system calls, instant asset serving
 - **SQLite Local**: No network latency, 50K+ queries per second
 - **Goroutine Concurrency**: Handle thousands of concurrent users efficiently
-- **Minimal Allocations**: Careful memory management for sustained performance
+- **TypeScript Optimization**: Compile-time optimizations and tree shaking
 
 ### **Security First**
 
-- **Automatic XSS Protection**: html/template prevents injection attacks
+- **Echo Security Middleware**: CSRF, CORS, secure headers out of the box
+- **Automatic XSS Protection**: Echo template rendering prevents injection attacks
 - **Parameterized Queries**: SQL injection protection by design
-- **Secure Headers**: CSRF, CSP, HSTS, and more out of the box
 - **Input Validation**: Server-side validation with type safety
+- **TypeScript Type Safety**: Compile-time guarantees prevent runtime errors
 - **No External Dependencies**: Reduced attack surface area
 
 ### **Developer Experience**
 
 - **Live Reloading**: Instant feedback with Air during development
-- **Type Safety**: Compile-time guarantees prevent runtime errors
-- **Standard Library**: Familiar APIs, excellent documentation
+- **Hot Module Replacement**: Instant frontend updates with Vite
+- **Type Safety**: Full-stack type safety with TypeScript
+- **Echo Framework**: Clean, intuitive API with excellent documentation
 - **Single Binary**: Deploy anywhere, no installation complexity
-- **Go Tooling**: Built-in testing, profiling, and debugging tools
+- **Modern Tooling**: Best-in-class development tools and workflows
 
 ## Contributing
 
@@ -347,18 +371,18 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ---
 
 <p align="center">
-  <strong>Ready to abandon the complexity?</strong><br>
+  <strong>Ready to embrace modern Go development?</strong><br>
   <sub>This entire platform runs on 12MB binaries with zero dependencies</sub>
 </p>
 
 <p align="center">
-  <strong>The Ultimate Go Hypermedia Stack</strong><br>
-  <sub>Go + http.ServeMux + HTMX + TypeScript + Vite + Pico.css + html/template + SQLite + Mage + Air</sub>
+  <strong>The Go Echo TypeScript Stack</strong><br>
+  <sub>Echo + TypeScript + Vite + Pico.css + SQLite + Mage + Air</sub>
 </p>
 
 <p align="center">
-  <em>Stop fighting frameworks. Start building with fundamentals.</em><br>
-  <strong>0.2ms response times | Single binary deployment | Secure by default</strong>
+  <em>Stop fighting frameworks. Start building with performance.</em><br>
+  <strong>0.2ms response times | Single binary deployment | Type-safe development</strong>
 </p>
 
 <p align="center">

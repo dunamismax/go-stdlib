@@ -12,10 +12,11 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      '/api': {
+      // Proxy all API calls to Echo backend
+      '^/(?!static|frontend).*': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        ws: true
       }
     }
   }
